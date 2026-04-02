@@ -1,0 +1,961 @@
+csa_app (1).zip
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CSA — Co-op Support Application</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #0f1923; --navy-light: #1a2840; --gold: #c9a84c; --gold-light: #e8c97a;
+    --cream: #f5f0e8; --cream-dark: #e8e0d0; --white: #ffffff;
+    --red: #c0392b; --green: #1e7e4a; --text: #1a1a2e; --muted: #6b7280; --border: #d4c9b0;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--text); min-height: 100vh; }
+
+  #landing { min-height:100vh; background:var(--navy); display:flex; flex-direction:column; align-items:center; justify-content:center; padding:2rem; position:relative; overflow:hidden; }
+  #landing::before { content:''; position:absolute; width:600px; height:600px; border-radius:50%; background:radial-gradient(circle,rgba(201,168,76,.15) 0%,transparent 70%); top:-100px; right:-100px; pointer-events:none; }
+  .landing-badge { font-size:.7rem; font-weight:600; letter-spacing:.2em; text-transform:uppercase; color:var(--gold); border:1px solid rgba(201,168,76,.4); padding:.4rem 1rem; border-radius:2rem; margin-bottom:2rem; animation:fadeUp .6s ease both; }
+  .landing-title { font-family:'DM Serif Display',serif; font-size:clamp(2.5rem,6vw,4.5rem); color:var(--white); text-align:center; line-height:1.1; margin-bottom:1rem; animation:fadeUp .6s .1s ease both; }
+  .landing-title span { color:var(--gold); font-style:italic; }
+  .landing-sub { color:rgba(255,255,255,.55); font-size:1rem; text-align:center; max-width:420px; line-height:1.7; margin-bottom:3rem; animation:fadeUp .6s .2s ease both; }
+  .landing-cards { display:flex; gap:1rem; flex-wrap:wrap; justify-content:center; animation:fadeUp .6s .3s ease both; }
+  .landing-card { background:rgba(255,255,255,.05); border:1px solid rgba(201,168,76,.2); border-radius:12px; padding:1.5rem 2rem; width:200px; text-align:center; cursor:pointer; transition:all .3s ease; backdrop-filter:blur(10px); }
+  .landing-card:hover { background:rgba(201,168,76,.1); border-color:var(--gold); transform:translateY(-4px); }
+  .landing-card .icon { font-size:2rem; margin-bottom:.75rem; display:block; }
+  .landing-card .label { color:var(--white); font-weight:600; font-size:.95rem; margin-bottom:.25rem; }
+  .landing-card .sublabel { color:rgba(255,255,255,.4); font-size:.75rem; }
+
+  .screen { display:none; min-height:100vh; animation:fadeIn .4s ease; }
+  .screen.active { display:block; }
+  .topnav { background:var(--navy); padding:1rem 2rem; display:flex; align-items:center; justify-content:space-between; position:sticky; top:0; z-index:100; }
+  .topnav-brand { font-family:'DM Serif Display',serif; color:var(--white); font-size:1.2rem; }
+  .topnav-brand span { color:var(--gold); }
+  .topnav-right { display:flex; align-items:center; gap:1rem; }
+  .nav-user { color:rgba(255,255,255,.6); font-size:.85rem; }
+  .btn-logout { background:transparent; border:1px solid rgba(255,255,255,.2); color:rgba(255,255,255,.7); padding:.4rem 1rem; border-radius:6px; cursor:pointer; font-size:.8rem; transition:all .2s; }
+  .btn-logout:hover { border-color:var(--gold); color:var(--gold); }
+
+  .page-content { max-width:960px; margin:0 auto; padding:2.5rem 2rem; }
+  .page-header { margin-bottom:2rem; }
+  .page-header h1 { font-family:'DM Serif Display',serif; font-size:2rem; color:var(--navy); margin-bottom:.25rem; }
+  .page-header p { color:var(--muted); font-size:.9rem; }
+
+  .card { background:var(--white); border:1px solid var(--border); border-radius:12px; padding:2rem; margin-bottom:1.5rem; box-shadow:0 1px 3px rgba(0,0,0,.06); }
+  .card h2 { font-family:'DM Serif Display',serif; font-size:1.3rem; color:var(--navy); margin-bottom:1.25rem; padding-bottom:.75rem; border-bottom:1px solid var(--cream-dark); }
+
+  .form-group { margin-bottom:1.25rem; }
+  label { display:block; font-size:.8rem; font-weight:600; letter-spacing:.05em; text-transform:uppercase; color:var(--navy); margin-bottom:.4rem; }
+  input[type="text"],input[type="email"],input[type="password"],input[type="date"],select,textarea { width:100%; padding:.75rem 1rem; border:1.5px solid var(--border); border-radius:8px; font-family:'DM Sans',sans-serif; font-size:.9rem; color:var(--text); background:var(--cream); transition:border-color .2s; outline:none; }
+  input:focus,select:focus,textarea:focus { border-color:var(--gold); background:var(--white); }
+  textarea { resize:vertical; min-height:100px; }
+  .form-row { display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
+
+  .btn { display:inline-flex; align-items:center; gap:.4rem; padding:.75rem 1.5rem; border-radius:8px; font-family:'DM Sans',sans-serif; font-weight:600; font-size:.875rem; cursor:pointer; border:none; transition:all .2s ease; }
+  .btn-primary { background:var(--navy); color:var(--white); }
+  .btn-primary:hover { background:var(--navy-light); transform:translateY(-1px); }
+  .btn-outline { background:transparent; border:1.5px solid var(--border); color:var(--text); }
+  .btn-outline:hover { border-color:var(--navy); }
+  .btn-success { background:var(--green); color:var(--white); padding:.4rem .9rem; font-size:.8rem; }
+  .btn-danger { background:var(--red); color:var(--white); padding:.4rem .9rem; font-size:.8rem; }
+  .btn-sm { padding:.35rem .75rem; font-size:.8rem; }
+
+  .table-wrap { overflow-x:auto; }
+  table { width:100%; border-collapse:collapse; font-size:.875rem; }
+  th { text-align:left; font-size:.72rem; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); padding:.75rem 1rem; border-bottom:2px solid var(--cream-dark); }
+  td { padding:.85rem 1rem; border-bottom:1px solid var(--cream-dark); vertical-align:middle; }
+  tr:last-child td { border-bottom:none; }
+  tr:hover td { background:var(--cream); }
+
+  .badge { display:inline-flex; align-items:center; padding:.25rem .65rem; border-radius:20px; font-size:.72rem; font-weight:600; }
+  .badge-pending { background:#fef3c7; color:#92400e; }
+  .badge-prov-accepted { background:#d1fae5; color:#065f46; }
+  .badge-prov-rejected { background:#fee2e2; color:#991b1b; }
+  .badge-final-accepted { background:#bfdbfe; color:#1e3a8a; }
+  .badge-final-rejected { background:#fce7f3; color:#831843; }
+  .badge-submitted { background:#d1fae5; color:#065f46; }
+  .badge-missing { background:#fee2e2; color:#991b1b; }
+  .badge-approved { background:#bfdbfe; color:#1e3a8a; }
+  .badge-rejected-p { background:#fee2e2; color:#991b1b; }
+  .badge-pending-p { background:#fef3c7; color:#92400e; }
+
+  .stats-row { display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:1rem; margin-bottom:2rem; }
+  .stat-card { background:var(--white); border:1px solid var(--border); border-radius:10px; padding:1.25rem 1.5rem; text-align:center; }
+  .stat-card .num { font-family:'DM Serif Display',serif; font-size:2.2rem; color:var(--navy); line-height:1; margin-bottom:.25rem; }
+  .stat-card .lbl { font-size:.75rem; color:var(--muted); font-weight:500; text-transform:uppercase; letter-spacing:.05em; }
+
+  .auth-wrap { min-height:100vh; display:flex; align-items:center; justify-content:center; background:var(--cream); padding:2rem; }
+  .auth-box { background:var(--white); border:1px solid var(--border); border-radius:16px; padding:2.5rem; width:100%; max-width:420px; box-shadow:0 4px 24px rgba(0,0,0,.08); }
+  .auth-logo { font-family:'DM Serif Display',serif; font-size:1.5rem; color:var(--navy); margin-bottom:.25rem; }
+  .auth-logo span { color:var(--gold); }
+  .auth-sub { color:var(--muted); font-size:.85rem; margin-bottom:2rem; }
+  .auth-tabs { display:flex; margin-bottom:1.5rem; border:1.5px solid var(--border); border-radius:8px; overflow:hidden; }
+  .auth-tab { flex:1; padding:.6rem; text-align:center; font-size:.82rem; font-weight:600; cursor:pointer; background:transparent; border:none; color:var(--muted); transition:all .2s; }
+  .auth-tab.active { background:var(--navy); color:var(--white); }
+
+  .alert { padding:.75rem 1rem; border-radius:8px; font-size:.85rem; margin-bottom:1rem; }
+  .alert-error { background:#fee2e2; color:#991b1b; border:1px solid #fca5a5; }
+  .alert-success { background:#d1fae5; color:#065f46; border:1px solid #6ee7b7; }
+  .alert-info { background:#dbeafe; color:#1e3a8a; border:1px solid #93c5fd; }
+  .alert-warning { background:#fef3c7; color:#92400e; border:1px solid #fcd34d; }
+
+  .tabs { display:flex; gap:.25rem; margin-bottom:1.5rem; border-bottom:2px solid var(--cream-dark); }
+  .tab-btn { padding:.6rem 1.2rem; font-size:.85rem; font-weight:600; color:var(--muted); background:none; border:none; cursor:pointer; border-bottom:2px solid transparent; margin-bottom:-2px; transition:all .2s; }
+  .tab-btn.active { color:var(--navy); border-bottom-color:var(--gold); }
+  .tab-panel { display:none; }
+  .tab-panel.active { display:block; }
+
+  .file-drop { border:2px dashed var(--border); border-radius:10px; padding:2rem; text-align:center; cursor:pointer; transition:all .2s; background:var(--cream); }
+  .file-drop:hover { border-color:var(--gold); }
+  .file-drop .icon { font-size:2rem; margin-bottom:.5rem; }
+  .file-drop p { color:var(--muted); font-size:.85rem; }
+  .file-drop input { display:none; }
+
+  .rating-group { display:grid; grid-template-columns:1fr auto; gap:1rem; align-items:center; padding:.75rem 0; border-bottom:1px solid var(--cream-dark); }
+  .stars { display:flex; gap:.25rem; }
+  .star { font-size:1.2rem; cursor:pointer; color:var(--cream-dark); transition:color .15s; }
+  .star.active { color:var(--gold); }
+  .star-display { font-size:1rem; color:var(--gold); }
+
+  .back-link { color:var(--muted); font-size:.85rem; cursor:pointer; display:inline-flex; align-items:center; gap:.3rem; margin-bottom:1.5rem; transition:color .2s; }
+  .back-link:hover { color:var(--navy); }
+  .empty-state { text-align:center; padding:3rem; color:var(--muted); }
+  .empty-state .icon { font-size:2.5rem; margin-bottom:.75rem; }
+
+  .deadline-banner { background:var(--navy); color:var(--white); padding:.75rem 1rem; border-radius:8px; font-size:.875rem; margin-bottom:1rem; display:flex; align-items:center; gap:.5rem; }
+  .deadline-banner.warning { background:#92400e; }
+  .deadline-banner.overdue { background:var(--red); }
+
+  .modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,.5); z-index:999; align-items:center; justify-content:center; }
+  .modal-overlay.open { display:flex; }
+  .modal { background:var(--white); border-radius:16px; padding:2rem; width:100%; max-width:400px; box-shadow:0 8px 32px rgba(0,0,0,.15); }
+  .modal h3 { font-family:'DM Serif Display',serif; font-size:1.2rem; color:var(--navy); margin-bottom:1rem; }
+
+  @keyframes fadeUp { from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)} }
+  @keyframes fadeIn { from{opacity:0}to{opacity:1} }
+</style>
+</head>
+<body>
+
+<!-- LANDING -->
+<div id="landing">
+  <div class="landing-badge">Toronto Metropolitan University</div>
+  <h1 class="landing-title">Co-op Support<br><span>Application</span></h1>
+  <p class="landing-sub">A centralized platform for managing co-op applications, work term reports, and employer evaluations.</p>
+  <div class="landing-cards">
+    <div class="landing-card" onclick="showScreen('apply')"><span class="icon">📝</span><div class="label">Apply</div><div class="sublabel">Submit application</div></div>
+    <div class="landing-card" onclick="showScreen('student-login')"><span class="icon">🎓</span><div class="label">Student</div><div class="sublabel">Login to portal</div></div>
+    <div class="landing-card" onclick="showScreen('supervisor-login')"><span class="icon">🏢</span><div class="label">Supervisor</div><div class="sublabel">Submit evaluation</div></div>
+    <div class="landing-card" onclick="showScreen('coordinator-login')"><span class="icon">⚙️</span><div class="label">Coordinator</div><div class="sublabel">Admin dashboard</div></div>
+  </div>
+</div>
+
+<!-- APPLY -->
+<div id="apply" class="screen">
+  <div class="auth-wrap">
+    <div class="auth-box" style="max-width:480px">
+      <span class="back-link" onclick="showScreen('landing')">← Back</span>
+      <div class="auth-logo">CSA <span>Portal</span></div>
+      <div class="auth-sub">Apply for Co-op Provisional Acceptance</div>
+      <div id="apply-msg"></div>
+      <div class="form-group"><label>Full Name</label><input type="text" id="apply-name" placeholder="Jane Doe"></div>
+      <div class="form-group"><label>Student ID</label><input type="text" id="apply-sid" placeholder="501XXXXXX"></div>
+      <div class="form-group"><label>Email Address</label><input type="email" id="apply-email" placeholder="jane@torontomu.ca"></div>
+      <button class="btn btn-primary" style="width:100%" onclick="submitApplication()">Submit Application</button>
+    </div>
+  </div>
+</div>
+
+<!-- STUDENT LOGIN -->
+<div id="student-login" class="screen">
+  <div class="auth-wrap">
+    <div class="auth-box">
+      <span class="back-link" onclick="showScreen('landing')">← Back</span>
+      <div class="auth-logo">CSA <span>Student</span></div>
+      <div class="auth-sub">Log in to access your co-op portal</div>
+      <div id="student-login-msg"></div>
+      <div class="auth-tabs">
+        <button class="auth-tab active" onclick="switchAuthTab(this,'student-login-form')">Login</button>
+        <button class="auth-tab" onclick="switchAuthTab(this,'student-register-form')">Register</button>
+      </div>
+      <div id="student-login-form">
+        <div class="form-group"><label>Student ID or Email</label><input type="text" id="sl-id" placeholder="501XXXXXX or email"></div>
+        <div class="form-group"><label>Password</label><input type="password" id="sl-pass" placeholder="••••••••"></div>
+        <p style="font-size:.78rem;color:var(--muted);margin-bottom:1rem">Demo: <strong>501100001 / pass123</strong> or <strong>501100003 / pass123</strong></p>
+        <button class="btn btn-primary" style="width:100%" onclick="studentLogin()">Log In</button>
+      </div>
+      <div id="student-register-form" style="display:none">
+        <div class="form-group"><label>Student ID</label><input type="text" id="sr-id" placeholder="501XXXXXX"></div>
+        <div class="form-group"><label>Email</label><input type="email" id="sr-email" placeholder="jane@torontomu.ca"></div>
+        <div class="form-group"><label>Password</label><input type="password" id="sr-pass" placeholder="Create password"></div>
+        <div class="form-group"><label>Confirm Password</label><input type="password" id="sr-pass2" placeholder="Confirm password"></div>
+        <button class="btn btn-primary" style="width:100%" onclick="studentRegister()">Create Account</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- STUDENT DASHBOARD -->
+<div id="student-dashboard" class="screen">
+  <nav class="topnav">
+    <div class="topnav-brand">CSA <span>&nbsp;Student Portal</span></div>
+    <div class="topnav-right">
+      <span class="nav-user" id="student-nav-name"></span>
+      <button class="btn-logout" onclick="showScreen('landing')">Log Out</button>
+    </div>
+  </nav>
+  <div class="page-content">
+    <div class="page-header">
+      <h1 id="student-welcome">Welcome back</h1>
+      <p>Manage your co-op placement, work term report, and track your application status.</p>
+    </div>
+    <div class="stats-row">
+      <div class="stat-card"><div class="num" id="s-stat-status">—</div><div class="lbl">App Status</div></div>
+      <div class="stat-card"><div class="num" id="s-stat-placement">—</div><div class="lbl">Placement</div></div>
+      <div class="stat-card"><div class="num" id="s-stat-report">—</div><div class="lbl">Report</div></div>
+      <div class="stat-card"><div class="num" id="s-stat-deadline">—</div><div class="lbl">Days Until Deadline</div></div>
+    </div>
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab(this,'tab-placement')">My Placement</button>
+      <button class="tab-btn" onclick="switchTab(this,'tab-report')">Work Term Report</button>
+      <button class="tab-btn" onclick="switchTab(this,'tab-appstatus')">My Application</button>
+    </div>
+
+    <!-- Placement tab -->
+    <div id="tab-placement" class="tab-panel active">
+      <div class="card">
+        <h2>Submit Job Placement</h2>
+        <div id="placement-msg"></div>
+        <div id="placement-existing"></div>
+        <div class="form-row">
+          <div class="form-group"><label>Company Name</label><input type="text" id="p-company" placeholder="Acme Corp"></div>
+          <div class="form-group"><label>Position Title</label><input type="text" id="p-position" placeholder="Software Developer Intern"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label>Start Date</label><input type="date" id="p-start"></div>
+          <div class="form-group"><label>End Date</label><input type="date" id="p-end"></div>
+        </div>
+        <button class="btn btn-primary" onclick="submitPlacement()">Submit Placement</button>
+      </div>
+    </div>
+
+    <!-- Report tab -->
+    <div id="tab-report" class="tab-panel">
+      <div class="card">
+        <h2>Submit Work Term Report</h2>
+        <div id="report-deadline-banner"></div>
+        <div id="report-msg"></div>
+        <div id="report-gate-msg"></div>
+        <div class="form-group"><label>Work Term</label>
+          <select id="s-workterm">
+            <option>Fall 2025 (Sep – Dec)</option>
+            <option>Winter 2026 (Jan – Apr)</option>
+            <option>Summer 2026 (May – Aug)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Report File (PDF only)</label>
+          <div class="file-drop" onclick="document.getElementById('report-file').click()">
+            <div class="icon">📄</div>
+            <p id="report-file-label">Click to upload your PDF report</p>
+            <input type="file" id="report-file" accept=".pdf" onchange="handleFileSelect(this,'report-file-label')">
+          </div>
+        </div>
+        <div style="display:flex;gap:1rem;margin-top:1rem">
+          <button class="btn btn-primary" id="submit-report-btn" onclick="submitReport()">Submit Report</button>
+          <button class="btn btn-outline" onclick="showAlert('report-msg','📥 In a real deployment a PDF template would download.','info')">📥 Download Template</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- App status tab -->
+    <div id="tab-appstatus" class="tab-panel">
+      <div class="card"><h2>Application Status</h2><div id="student-app-status-detail"></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- SUPERVISOR LOGIN -->
+<div id="supervisor-login" class="screen">
+  <div class="auth-wrap">
+    <div class="auth-box">
+      <span class="back-link" onclick="showScreen('landing')">← Back</span>
+      <div class="auth-logo">CSA <span>Supervisor</span></div>
+      <div class="auth-sub">Submit employer evaluations for your co-op student</div>
+      <div id="sup-login-msg"></div>
+      <div class="auth-tabs">
+        <button class="auth-tab active" onclick="switchAuthTab(this,'sup-login-form')">Login</button>
+        <button class="auth-tab" onclick="switchAuthTab(this,'sup-register-form')">Register</button>
+      </div>
+      <div id="sup-login-form">
+        <div class="form-group"><label>Email</label><input type="email" id="supl-email" placeholder="supervisor@company.com"></div>
+        <div class="form-group"><label>Password</label><input type="password" id="supl-pass" placeholder="••••••••"></div>
+        <button class="btn btn-primary" style="width:100%" onclick="supervisorLogin()">Log In</button>
+      </div>
+      <div id="sup-register-form" style="display:none">
+        <div class="form-group"><label>Full Name</label><input type="text" id="supr-name" placeholder="John Smith"></div>
+        <div class="form-group"><label>Company Name</label><input type="text" id="supr-company" placeholder="Acme Corp"></div>
+        <div class="form-group"><label>Email</label><input type="email" id="supr-email" placeholder="supervisor@company.com"></div>
+        <div class="form-group"><label>Student ID to Evaluate</label><input type="text" id="supr-student" placeholder="501XXXXXX"></div>
+        <div class="form-group"><label>Password</label><input type="password" id="supr-pass" placeholder="Create password"></div>
+        <button class="btn btn-primary" style="width:100%" onclick="supervisorRegister()">Create Account</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SUPERVISOR DASHBOARD -->
+<div id="supervisor-dashboard" class="screen">
+  <nav class="topnav">
+    <div class="topnav-brand">CSA <span>&nbsp;Supervisor Portal</span></div>
+    <div class="topnav-right">
+      <span class="nav-user" id="sup-nav-name"></span>
+      <button class="btn-logout" onclick="showScreen('landing')">Log Out</button>
+    </div>
+  </nav>
+  <div class="page-content">
+    <div class="page-header"><h1>Employer Evaluation</h1><p>Submit and view your evaluation for your co-op student's work term.</p></div>
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab(this,'tab-eval-form')">Submit Evaluation</button>
+      <button class="tab-btn" onclick="switchTab(this,'tab-eval-pdf')">Upload PDF</button>
+      <button class="tab-btn" onclick="switchTab(this,'tab-eval-view');loadSubmittedEval()">View Submitted</button>
+    </div>
+    <div id="tab-eval-form" class="tab-panel active">
+      <div class="card">
+        <h2>Evaluation Form</h2>
+        <div id="eval-form-msg"></div>
+        <div class="form-group"><label>Student Being Evaluated</label><input type="text" id="eval-student" readonly></div>
+        <div class="form-group"><label>Work Term Period</label>
+          <select id="eval-term">
+            <option>Fall 2025 (Sep – Dec)</option>
+            <option>Winter 2026 (Jan – Apr)</option>
+            <option>Summer 2026 (May – Aug)</option>
+          </select>
+        </div>
+        <p style="font-size:.8rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin:1.25rem 0 .75rem">Performance Ratings</p>
+        <div id="ratings-container"></div>
+        <div class="form-group" style="margin-top:1.25rem"><label>Additional Comments</label><textarea id="eval-comments" placeholder="Share additional observations..."></textarea></div>
+        <button class="btn btn-primary" onclick="submitEvalForm()">Submit Evaluation</button>
+      </div>
+    </div>
+    <div id="tab-eval-pdf" class="tab-panel">
+      <div class="card">
+        <h2>Upload Scanned Evaluation</h2>
+        <div id="eval-pdf-msg"></div>
+        <p style="color:var(--muted);font-size:.875rem;margin-bottom:1.25rem">Upload a scanned copy of the paper evaluation form.</p>
+        <div class="form-group">
+          <label>Evaluation PDF</label>
+          <div class="file-drop" onclick="document.getElementById('eval-file').click()">
+            <div class="icon">📋</div>
+            <p id="eval-file-label">Click to upload scanned evaluation (PDF)</p>
+            <input type="file" id="eval-file" accept=".pdf" onchange="handleFileSelect(this,'eval-file-label')">
+          </div>
+        </div>
+        <button class="btn btn-primary" style="margin-top:1rem" onclick="submitEvalPDF()">Upload Evaluation</button>
+      </div>
+    </div>
+    <div id="tab-eval-view" class="tab-panel">
+      <div class="card">
+        <h2>Submitted Evaluation</h2>
+        <div id="eval-view-content"><div class="empty-state"><div class="icon">📋</div><p>No evaluation submitted yet.</p></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- COORDINATOR LOGIN -->
+<div id="coordinator-login" class="screen">
+  <div class="auth-wrap">
+    <div class="auth-box">
+      <span class="back-link" onclick="showScreen('landing')">← Back</span>
+      <div class="auth-logo">CSA <span>Coordinator</span></div>
+      <div class="auth-sub">Administrator access</div>
+      <div id="coord-login-msg"></div>
+      <div class="form-group"><label>Username</label><input type="text" id="cl-user" placeholder="coordinator"></div>
+      <div class="form-group"><label>Password</label><input type="password" id="cl-pass" placeholder="••••••••"></div>
+      <p style="font-size:.78rem;color:var(--muted);margin-bottom:1rem">Demo: <strong>coordinator / admin123</strong></p>
+      <button class="btn btn-primary" style="width:100%" onclick="coordinatorLogin()">Log In</button>
+    </div>
+  </div>
+</div>
+
+<!-- COORDINATOR DASHBOARD -->
+<div id="coordinator-dashboard" class="screen">
+  <nav class="topnav">
+    <div class="topnav-brand">CSA <span>&nbsp;Coordinator</span></div>
+    <div class="topnav-right">
+      <span class="nav-user">Co-op Coordinator</span>
+      <button class="btn-logout" onclick="showScreen('landing')">Log Out</button>
+    </div>
+  </nav>
+  <div class="page-content">
+    <div class="page-header"><h1>Coordinator Dashboard</h1><p>Manage applications, placements, reports, and evaluations.</p></div>
+    <div class="stats-row" id="coord-stats"></div>
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab(this,'tab-applicants')">Applications</button>
+      <button class="tab-btn" onclick="switchTab(this,'tab-placements')">Placements</button>
+      <button class="tab-btn" onclick="switchTab(this,'tab-reports')">Reports</button>
+      <button class="tab-btn" onclick="switchTab(this,'tab-evaluations')">Evaluations</button>
+      <button class="tab-btn" onclick="switchTab(this,'tab-rejections')">Rejections</button>
+    </div>
+
+    <div id="tab-applicants" class="tab-panel active">
+      <div class="card">
+        <h2>All Applicants</h2>
+        <div style="margin-bottom:1rem;display:flex;gap:.5rem;flex-wrap:wrap">
+          <select id="filter-status" onchange="renderApplicants()" style="width:auto;padding:.5rem .75rem;font-size:.85rem">
+            <option value="">All Statuses</option>
+            <option value="Pending">Pending</option>
+            <option value="Provisionally Accepted">Prov. Accepted</option>
+            <option value="Provisionally Rejected">Prov. Rejected</option>
+            <option value="Finally Accepted">Finally Accepted</option>
+            <option value="Finally Rejected">Finally Rejected</option>
+          </select>
+          <button class="btn btn-outline btn-sm" onclick="sendReminders()">📧 Send Reminders</button>
+        </div>
+        <div class="table-wrap">
+          <table><thead><tr><th>Name</th><th>Student ID</th><th>Email</th><th>Status</th><th>Applied</th><th>Actions</th></tr></thead>
+          <tbody id="applicants-tbody"></tbody></table>
+        </div>
+      </div>
+    </div>
+
+    <div id="tab-placements" class="tab-panel">
+      <div class="card">
+        <h2>Student Placements</h2>
+        <div class="table-wrap">
+          <table><thead><tr><th>Student</th><th>Company</th><th>Position</th><th>Start</th><th>End</th><th>Status</th><th>Actions</th></tr></thead>
+          <tbody id="placements-tbody"></tbody></table>
+        </div>
+      </div>
+    </div>
+
+    <div id="tab-reports" class="tab-panel">
+      <div class="card">
+        <h2>Work Term Reports</h2>
+        <div class="table-wrap">
+          <table><thead><tr><th>Student</th><th>Student ID</th><th>Work Term</th><th>Deadline</th><th>Report Status</th><th>Submitted</th></tr></thead>
+          <tbody id="reports-tbody"></tbody></table>
+        </div>
+      </div>
+    </div>
+
+    <div id="tab-evaluations" class="tab-panel">
+      <div class="card">
+        <h2>Employer Evaluations</h2>
+        <div class="table-wrap">
+          <table><thead><tr><th>Student</th><th>Supervisor</th><th>Company</th><th>Term</th><th>Status</th></tr></thead>
+          <tbody id="evaluations-tbody"></tbody></table>
+        </div>
+      </div>
+    </div>
+
+    <div id="tab-rejections" class="tab-panel">
+      <div class="card">
+        <h2>Co-op Placement Rejections</h2>
+        <div id="rejection-msg"></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:1rem;align-items:end;margin-bottom:1.5rem">
+          <div><label>Student ID</label><input type="text" id="rej-sid" placeholder="501XXXXXX"></div>
+          <div><label>Company Name</label><input type="text" id="rej-company" placeholder="Company name"></div>
+          <div><label>Reason</label><input type="text" id="rej-reason" placeholder="e.g. GPA requirement"></div>
+          <button class="btn btn-primary" onclick="addRejection()">Add</button>
+        </div>
+        <div class="table-wrap">
+          <table><thead><tr><th>Student ID</th><th>Company</th><th>Reason</th><th>Date</th></tr></thead>
+          <tbody id="rejections-tbody"></tbody></table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Rejection reason modal -->
+<div class="modal-overlay" id="reject-modal">
+  <div class="modal">
+    <h3>Reject Placement</h3>
+    <p style="color:var(--muted);font-size:.875rem;margin-bottom:1rem">Provide a reason for rejecting this placement. It will be logged automatically.</p>
+    <div class="form-group"><label>Reason</label><input type="text" id="reject-reason-input" placeholder="e.g. Does not meet requirements"></div>
+    <div style="display:flex;gap:.75rem;margin-top:1rem">
+      <button class="btn btn-danger" onclick="confirmReject()">Confirm Reject</button>
+      <button class="btn btn-outline" onclick="closeRejectModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const API = '';
+let currentStudent = null;
+let currentSupervisor = null;
+let rejectingPlacementId = null;
+const ratingCategories = ['Technical Skills','Communication','Teamwork','Initiative','Professionalism','Overall Performance'];
+const ratings = {};
+
+// Work term deadlines (report due 30 days after end)
+const termDeadlines = {
+  'Fall 2025 (Sep – Dec)': '2026-01-23',
+  'Winter 2026 (Jan – Apr)': '2026-05-24',
+  'Summer 2026 (May – Aug)': '2026-09-27',
+};
+
+async function api(method, path, body) {
+  const opts = { method, headers: { 'Content-Type': 'application/json' } };
+  if (body) opts.body = JSON.stringify(body);
+  const res = await fetch(API + path, opts);
+  return res.json();
+}
+
+function showAlert(id, msg, type='error') {
+  document.getElementById(id).innerHTML = `<div class="alert alert-${type}">${msg}</div>`;
+}
+function clearAlert(id) { document.getElementById(id).innerHTML = ''; }
+
+function showScreen(id) {
+  document.querySelectorAll('.screen, #landing').forEach(s => { s.classList.remove('active'); s.style.display = 'none'; });
+  const el = document.getElementById(id);
+  el.style.display = 'block';
+  setTimeout(() => el.classList.add('active'), 10);
+  if (id === 'coordinator-dashboard') refreshCoordDashboard();
+  if (id === 'supervisor-dashboard') initSupervisorDashboard();
+}
+
+function switchTab(btn, panelId) {
+  btn.closest('.tabs').querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.toggle('active', p.id === panelId));
+}
+
+function switchAuthTab(btn, formId) {
+  btn.closest('.auth-tabs').querySelectorAll('.auth-tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  btn.closest('.auth-box').querySelectorAll('[id$="-form"]').forEach(f => f.style.display = f.id === formId ? 'block' : 'none');
+}
+
+function statusBadge(status) {
+  const map = { 'Pending':'badge-pending','Provisionally Accepted':'badge-prov-accepted','Provisionally Rejected':'badge-prov-rejected','Finally Accepted':'badge-final-accepted','Finally Rejected':'badge-final-rejected' };
+  return `<span class="badge ${map[status]||'badge-pending'}">${status}</span>`;
+}
+
+function placementBadge(status) {
+  const map = { 'Approved':'badge-approved','Rejected':'badge-rejected-p','Pending Approval':'badge-pending-p' };
+  return `<span class="badge ${map[status]||'badge-pending-p'}">${status}</span>`;
+}
+
+function handleFileSelect(input, labelId) {
+  if (input.files[0]) document.getElementById(labelId).textContent = '✅ ' + input.files[0].name;
+}
+
+function daysUntil(dateStr) {
+  if (!dateStr) return null;
+  const diff = new Date(dateStr) - new Date();
+  return Math.ceil(diff / (1000 * 60 * 60 * 24));
+}
+
+// ── APPLICATION ───────────────────────────────────
+async function submitApplication() {
+  const name = document.getElementById('apply-name').value.trim();
+  const sid = document.getElementById('apply-sid').value.trim();
+  const email = document.getElementById('apply-email').value.trim();
+  const res = await api('POST', '/api/applications', { name, sid, email });
+  if (res.error) return showAlert('apply-msg', res.error);
+  showAlert('apply-msg', '✅ Application submitted! You will be notified once reviewed.', 'success');
+  ['apply-name','apply-sid','apply-email'].forEach(id => document.getElementById(id).value = '');
+}
+
+// ── STUDENT AUTH ──────────────────────────────────
+async function studentLogin() {
+  const id = document.getElementById('sl-id').value.trim();
+  const password = document.getElementById('sl-pass').value;
+  const res = await api('POST', '/api/student/login', { id, password });
+  if (res.error) return showAlert('student-login-msg', res.error);
+  currentStudent = res;
+  await loadStudentDashboard();
+  showScreen('student-dashboard');
+}
+
+async function studentRegister() {
+  const sid = document.getElementById('sr-id').value.trim();
+  const email = document.getElementById('sr-email').value.trim();
+  const password = document.getElementById('sr-pass').value;
+  const password2 = document.getElementById('sr-pass2').value;
+  const res = await api('POST', '/api/student/register', { sid, email, password, password2 });
+  if (res.error) return showAlert('student-login-msg', res.error);
+  showAlert('student-login-msg', '✅ Account created! You can now log in.', 'success');
+}
+
+async function loadStudentDashboard() {
+  const info = await api('GET', `/api/student/${currentStudent.sid}`);
+  const placement = await api('GET', `/api/placements/student/${currentStudent.sid}`);
+
+  document.getElementById('student-welcome').textContent = `Welcome, ${currentStudent.name}`;
+  document.getElementById('student-nav-name').textContent = currentStudent.name;
+  document.getElementById('s-stat-status').textContent = info.status ? info.status.split(' ').slice(-1)[0] : '—';
+  document.getElementById('s-stat-report').textContent = info.report || '—';
+  document.getElementById('s-stat-placement').textContent = placement.status ? placement.status.split(' ')[0] : 'None';
+
+  // Deadline calculation
+  const term = info.term;
+  const deadline = term ? termDeadlines[term] : null;
+  const days = daysUntil(deadline);
+  if (days !== null) {
+    document.getElementById('s-stat-deadline').textContent = days > 0 ? days : 'Overdue';
+    const banner = document.getElementById('report-deadline-banner');
+    if (days <= 0) {
+      banner.innerHTML = `<div class="deadline-banner overdue">⚠️ Your report deadline has passed (${deadline}). Please submit immediately.</div>`;
+    } else if (days <= 7) {
+      banner.innerHTML = `<div class="deadline-banner warning">⚠️ Your report is due in ${days} day(s) on ${deadline}.</div>`;
+    } else {
+      banner.innerHTML = `<div class="deadline-banner">📅 Report deadline: ${deadline} (${days} days remaining)</div>`;
+    }
+  } else {
+    document.getElementById('s-stat-deadline').textContent = '—';
+  }
+
+  // Report gating — only finally accepted
+  const reportBtn = document.getElementById('submit-report-btn');
+  if (info.status !== 'Finally Accepted') {
+    document.getElementById('report-gate-msg').innerHTML = `<div class="alert alert-warning">⚠️ Report submission is only available after final acceptance. Your current status is: <strong>${info.status}</strong></div>`;
+    reportBtn.disabled = true;
+    reportBtn.style.opacity = '0.5';
+  } else {
+    document.getElementById('report-gate-msg').innerHTML = '';
+    reportBtn.disabled = false;
+    reportBtn.style.opacity = '1';
+  }
+
+  // Show existing placement
+  if (placement.id) {
+    document.getElementById('placement-existing').innerHTML = `
+      <div class="alert alert-info" style="margin-bottom:1rem">
+        <strong>Current Placement:</strong> ${placement.position} at ${placement.company} 
+        — ${placement.start_date} to ${placement.end_date} 
+        — ${placementBadge(placement.status)}
+      </div>`;
+    document.getElementById('p-company').value = placement.company;
+    document.getElementById('p-position').value = placement.position;
+    document.getElementById('p-start').value = placement.start_date;
+    document.getElementById('p-end').value = placement.end_date;
+  }
+
+  // App status detail
+  document.getElementById('student-app-status-detail').innerHTML = `
+    <div style="display:grid;gap:.75rem">
+      <div style="display:flex;justify-content:space-between;padding:.75rem;background:var(--cream);border-radius:8px">
+        <span style="font-weight:600;font-size:.875rem">Application Status</span>${statusBadge(info.status)}
+      </div>
+      <div style="display:flex;justify-content:space-between;padding:.75rem;background:var(--cream);border-radius:8px">
+        <span style="font-weight:600;font-size:.875rem">Report</span>
+        <span class="badge ${info.report==='Submitted'?'badge-submitted':'badge-missing'}">${info.report}</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;padding:.75rem;background:var(--cream);border-radius:8px">
+        <span style="font-weight:600;font-size:.875rem">Applied</span>
+        <span style="font-size:.875rem">${info.applied}</span>
+      </div>
+    </div>`;
+}
+
+async function submitPlacement() {
+  const company = document.getElementById('p-company').value.trim();
+  const position = document.getElementById('p-position').value.trim();
+  const startDate = document.getElementById('p-start').value;
+  const endDate = document.getElementById('p-end').value;
+  const res = await api('POST', '/api/placements', { sid: currentStudent.sid, company, position, startDate, endDate });
+  if (res.error) return showAlert('placement-msg', res.error);
+  showAlert('placement-msg', '✅ Placement submitted for coordinator approval.', 'success');
+  await loadStudentDashboard();
+}
+
+async function submitReport() {
+  const file = document.getElementById('report-file').files[0];
+  const term = document.getElementById('s-workterm').value;
+  if (!file) return showAlert('report-msg', 'Please select a PDF file.');
+  if (!file.name.endsWith('.pdf')) return showAlert('report-msg', 'Only PDF files are accepted.');
+  const res = await api('PUT', `/api/applications/${currentStudent.sid}/report`, { term });
+  if (res.error) return showAlert('report-msg', res.error);
+  showAlert('report-msg', '✅ Report submitted successfully!', 'success');
+  document.getElementById('s-stat-report').textContent = 'Submitted';
+}
+
+// ── SUPERVISOR AUTH ───────────────────────────────
+async function supervisorRegister() {
+  const name = document.getElementById('supr-name').value.trim();
+  const company = document.getElementById('supr-company').value.trim();
+  const email = document.getElementById('supr-email').value.trim();
+  const studentSid = document.getElementById('supr-student').value.trim();
+  const password = document.getElementById('supr-pass').value;
+  const res = await api('POST', '/api/supervisor/register', { name, company, email, studentSid, password });
+  if (res.error) return showAlert('sup-login-msg', res.error);
+  showAlert('sup-login-msg', '✅ Account created! You can now log in.', 'success');
+}
+
+async function supervisorLogin() {
+  const email = document.getElementById('supl-email').value.trim();
+  const password = document.getElementById('supl-pass').value;
+  const res = await api('POST', '/api/supervisor/login', { email, password });
+  if (res.error) return showAlert('sup-login-msg', res.error);
+  currentSupervisor = res;
+  showScreen('supervisor-dashboard');
+}
+
+function initSupervisorDashboard() {
+  if (!currentSupervisor) return;
+  document.getElementById('sup-nav-name').textContent = currentSupervisor.name;
+  document.getElementById('eval-student').value = currentSupervisor.studentSid;
+  buildRatings();
+}
+
+function buildRatings() {
+  const container = document.getElementById('ratings-container');
+  container.innerHTML = '';
+  ratingCategories.forEach(cat => {
+    ratings[cat] = 0;
+    const row = document.createElement('div');
+    row.className = 'rating-group';
+    row.innerHTML = `<span style="font-size:.875rem">${cat}</span>
+      <div class="stars">${[1,2,3,4,5].map(i=>`<span class="star" data-cat="${cat}" data-val="${i}" onclick="setRating('${cat}',${i})">★</span>`).join('')}</div>`;
+    container.appendChild(row);
+  });
+}
+
+function setRating(cat, val) {
+  ratings[cat] = val;
+  document.querySelectorAll(`.star[data-cat="${cat}"]`).forEach(s => s.classList.toggle('active', parseInt(s.dataset.val) <= val));
+}
+
+async function submitEvalForm() {
+  const unrated = ratingCategories.filter(c => !ratings[c]);
+  if (unrated.length) return showAlert('eval-form-msg', `Please rate all categories. Missing: ${unrated.join(', ')}`);
+  const res = await api('POST', '/api/evaluations', {
+    studentSid: document.getElementById('eval-student').value,
+    supervisorName: currentSupervisor.name,
+    company: currentSupervisor.company,
+    term: document.getElementById('eval-term').value,
+    comments: document.getElementById('eval-comments').value,
+    ratings
+  });
+  if (res.error) return showAlert('eval-form-msg', res.error);
+  showAlert('eval-form-msg', '✅ Evaluation submitted and linked to the student.', 'success');
+}
+
+async function submitEvalPDF() {
+  const file = document.getElementById('eval-file').files[0];
+  if (!file) return showAlert('eval-pdf-msg', 'Please select a PDF file.');
+  if (!file.name.endsWith('.pdf')) return showAlert('eval-pdf-msg', 'Only PDF files are accepted.');
+  // Treat as form submission with no ratings for demo
+  const res = await api('POST', '/api/evaluations', {
+    studentSid: currentSupervisor.studentSid,
+    supervisorName: currentSupervisor.name,
+    company: currentSupervisor.company,
+    term: 'PDF Upload',
+    comments: 'Submitted via scanned PDF.',
+    ratings: {}
+  });
+  if (res.error) return showAlert('eval-pdf-msg', res.error);
+  showAlert('eval-pdf-msg', '✅ Evaluation PDF uploaded and linked to the student.', 'success');
+}
+
+async function loadSubmittedEval() {
+  if (!currentSupervisor) return;
+  const ev = await api('GET', `/api/evaluations/student/${currentSupervisor.studentSid}`);
+  const container = document.getElementById('eval-view-content');
+  if (!ev.id) {
+    container.innerHTML = `<div class="empty-state"><div class="icon">📋</div><p>No evaluation submitted yet.</p></div>`;
+    return;
+  }
+  let ratingsHtml = '';
+  try {
+    const r = ev.ratings.replace(/'/g, '"');
+    const parsed = JSON.parse(r);
+    ratingsHtml = Object.entries(parsed).map(([k,v]) =>
+      `<div class="rating-group"><span style="font-size:.875rem">${k}</span><div>${'★'.repeat(v)}<span style="color:var(--cream-dark)">${'★'.repeat(5-v)}</span></div></div>`
+    ).join('');
+  } catch(e) { ratingsHtml = `<p style="color:var(--muted);font-size:.875rem">${ev.ratings}</p>`; }
+
+  container.innerHTML = `
+    <div style="display:grid;gap:.75rem;margin-bottom:1.25rem">
+      <div style="display:flex;justify-content:space-between;padding:.75rem;background:var(--cream);border-radius:8px">
+        <span style="font-weight:600;font-size:.875rem">Student</span><span>${ev.student_name}</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;padding:.75rem;background:var(--cream);border-radius:8px">
+        <span style="font-weight:600;font-size:.875rem">Work Term</span><span>${ev.term}</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;padding:.75rem;background:var(--cream);border-radius:8px">
+        <span style="font-weight:600;font-size:.875rem">Status</span><span class="badge badge-submitted">${ev.status}</span>
+      </div>
+    </div>
+    <p style="font-size:.8rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:.75rem">Ratings Given</p>
+    ${ratingsHtml}
+    ${ev.comments ? `<div style="margin-top:1rem"><p style="font-size:.8rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:.5rem">Comments</p><p style="font-size:.875rem;line-height:1.6">${ev.comments}</p></div>` : ''}`;
+}
+
+// ── COORDINATOR ───────────────────────────────────
+function coordinatorLogin() {
+  const user = document.getElementById('cl-user').value.trim();
+  const pass = document.getElementById('cl-pass').value;
+  if (user === 'coordinator' && pass === 'admin123') showScreen('coordinator-dashboard');
+  else showAlert('coord-login-msg', 'Invalid credentials. Use coordinator / admin123');
+}
+
+async function refreshCoordDashboard() {
+  const [apps, evals, rejs, placements] = await Promise.all([
+    api('GET', '/api/applications'),
+    api('GET', '/api/evaluations'),
+    api('GET', '/api/rejections'),
+    api('GET', '/api/placements'),
+  ]);
+
+  document.getElementById('coord-stats').innerHTML = `
+    <div class="stat-card"><div class="num">${apps.length}</div><div class="lbl">Total Applicants</div></div>
+    <div class="stat-card"><div class="num">${apps.filter(a=>a.status==='Pending').length}</div><div class="lbl">Pending Review</div></div>
+    <div class="stat-card"><div class="num">${apps.filter(a=>a.status.includes('Accepted')).length}</div><div class="lbl">Accepted</div></div>
+    <div class="stat-card"><div class="num">${apps.filter(a=>a.report==='Submitted').length}</div><div class="lbl">Reports In</div></div>`;
+
+  renderApplicantsData(apps);
+  renderPlacementsData(placements);
+  renderReportsData(apps);
+  renderEvaluationsData(apps, evals);
+  renderRejectionsData(rejs);
+}
+
+function renderApplicantsData(apps) {
+  const filter = document.getElementById('filter-status').value;
+  const list = filter ? apps.filter(a => a.status === filter) : apps;
+  const tbody = document.getElementById('applicants-tbody');
+  if (!list.length) { tbody.innerHTML = `<tr><td colspan="6"><div class="empty-state"><div class="icon">📭</div><p>No applicants found.</p></div></td></tr>`; return; }
+  tbody.innerHTML = list.map(a => `
+    <tr>
+      <td style="font-weight:600">${a.name}</td>
+      <td style="font-family:monospace;font-size:.82rem">${a.sid}</td>
+      <td style="font-size:.82rem;color:var(--muted)">${a.email}</td>
+      <td>${statusBadge(a.status)}</td>
+      <td style="font-size:.82rem;color:var(--muted)">${a.applied}</td>
+      <td><div style="display:flex;gap:.4rem;flex-wrap:wrap">
+        ${a.status==='Pending'?`<button class="btn btn-success btn-sm" onclick="updateStatus(${a.id},'Provisionally Accepted')">✓ Prov. Accept</button><button class="btn btn-danger btn-sm" onclick="updateStatus(${a.id},'Provisionally Rejected')">✗ Prov. Reject</button>`:''}
+        ${a.status==='Provisionally Accepted'?`<button class="btn btn-success btn-sm" onclick="updateStatus(${a.id},'Finally Accepted')">✓ Final Accept</button><button class="btn btn-danger btn-sm" onclick="updateStatus(${a.id},'Finally Rejected')">✗ Final Reject</button>`:''}
+        ${['Finally Accepted','Finally Rejected','Provisionally Rejected'].includes(a.status)?`<span style="font-size:.78rem;color:var(--muted)">Decision made</span>`:''}
+      </div></td>
+    </tr>`).join('');
+}
+
+async function renderApplicants() {
+  const apps = await api('GET', '/api/applications');
+  renderApplicantsData(apps);
+}
+
+async function updateStatus(id, status) {
+  await api('PUT', `/api/applications/${id}/status`, { status });
+  refreshCoordDashboard();
+}
+
+function renderPlacementsData(placements) {
+  const tbody = document.getElementById('placements-tbody');
+  if (!placements.length) { tbody.innerHTML = `<tr><td colspan="7"><div class="empty-state"><div class="icon">🏢</div><p>No placements submitted yet.</p></div></td></tr>`; return; }
+  tbody.innerHTML = placements.map(p => `
+    <tr>
+      <td style="font-weight:600">${p.student_name}</td>
+      <td>${p.company}</td>
+      <td style="font-size:.82rem">${p.position}</td>
+      <td style="font-size:.82rem;color:var(--muted)">${p.start_date}</td>
+      <td style="font-size:.82rem;color:var(--muted)">${p.end_date}</td>
+      <td>${placementBadge(p.status)}</td>
+      <td><div style="display:flex;gap:.4rem">
+        ${p.status==='Pending Approval'?`<button class="btn btn-success btn-sm" onclick="updatePlacement(${p.id},'Approved')">✓ Approve</button><button class="btn btn-danger btn-sm" onclick="openRejectModal(${p.id})">✗ Reject</button>`:''}
+        ${p.status!=='Pending Approval'?`<span style="font-size:.78rem;color:var(--muted)">Decided</span>`:''}
+      </div></td>
+    </tr>`).join('');
+}
+
+async function updatePlacement(id, status) {
+  await api('PUT', `/api/placements/${id}/status`, { status });
+  refreshCoordDashboard();
+}
+
+function openRejectModal(id) {
+  rejectingPlacementId = id;
+  document.getElementById('reject-reason-input').value = '';
+  document.getElementById('reject-modal').classList.add('open');
+}
+
+function closeRejectModal() {
+  document.getElementById('reject-modal').classList.remove('open');
+  rejectingPlacementId = null;
+}
+
+async function confirmReject() {
+  const reason = document.getElementById('reject-reason-input').value.trim();
+  if (!reason) return alert('Please enter a reason.');
+  await api('PUT', `/api/placements/${rejectingPlacementId}/status`, { status: 'Rejected', reason });
+  closeRejectModal();
+  refreshCoordDashboard();
+}
+
+function renderReportsData(apps) {
+  const tbody = document.getElementById('reports-tbody');
+  const accepted = apps.filter(a => a.status.includes('Accepted'));
+  if (!accepted.length) { tbody.innerHTML = `<tr><td colspan="6"><div class="empty-state"><div class="icon">📄</div><p>No accepted students yet.</p></div></td></tr>`; return; }
+  tbody.innerHTML = accepted.map(a => {
+    const deadline = a.term ? termDeadlines[a.term] : null;
+    const days = daysUntil(deadline);
+    const deadlineDisplay = deadline ? `${deadline}${days !== null ? ` (${days > 0 ? days + 'd left' : 'overdue'})` : ''}` : '—';
+    return `<tr>
+      <td style="font-weight:600">${a.name}</td>
+      <td style="font-family:monospace;font-size:.82rem">${a.sid}</td>
+      <td style="font-size:.82rem">${a.term||'—'}</td>
+      <td style="font-size:.82rem;color:${days !== null && days <= 0 ? 'var(--red)' : 'var(--muted)'}">${deadlineDisplay}</td>
+      <td><span class="badge ${a.report==='Submitted'?'badge-submitted':'badge-missing'}">${a.report}</span></td>
+      <td style="font-size:.82rem;color:var(--muted)">${a.report_date||'—'}</td>
+    </tr>`;
+  }).join('');
+}
+
+function renderEvaluationsData(apps, evals) {
+  const tbody = document.getElementById('evaluations-tbody');
+  const accepted = apps.filter(a => a.status.includes('Accepted'));
+  if (!accepted.length) { tbody.innerHTML = `<tr><td colspan="5"><div class="empty-state"><div class="icon">📋</div><p>No accepted students yet.</p></div></td></tr>`; return; }
+  tbody.innerHTML = accepted.map(a => {
+    const ev = evals.find(e => e.student_sid === a.sid);
+    return `<tr>
+      <td style="font-weight:600">${a.name}</td>
+      <td style="font-size:.82rem">${ev?ev.supervisor_name:'—'}</td>
+      <td style="font-size:.82rem">${ev?ev.company:'—'}</td>
+      <td style="font-size:.82rem">${ev?ev.term:'—'}</td>
+      <td><span class="badge ${ev?'badge-submitted':'badge-missing'}">${ev?'Submitted':'Missing'}</span></td>
+    </tr>`;
+  }).join('');
+}
+
+function renderRejectionsData(rejs) {
+  const tbody = document.getElementById('rejections-tbody');
+  if (!rejs.length) { tbody.innerHTML = `<tr><td colspan="4"><div class="empty-state"><div class="icon">📭</div><p>No rejections recorded.</p></div></td></tr>`; return; }
+  tbody.innerHTML = rejs.map(r => `
+    <tr>
+      <td style="font-family:monospace;font-size:.82rem">${r.sid}</td>
+      <td>${r.company}</td>
+      <td style="font-size:.82rem;color:var(--muted)">${r.reason}</td>
+      <td style="font-size:.82rem;color:var(--muted)">${r.date}</td>
+    </tr>`).join('');
+}
+
+async function addRejection() {
+  const sid = document.getElementById('rej-sid').value.trim();
+  const company = document.getElementById('rej-company').value.trim();
+  const reason = document.getElementById('rej-reason').value.trim();
+  const res = await api('POST', '/api/rejections', { sid, company, reason });
+  if (res.error) return showAlert('rejection-msg', res.error);
+  ['rej-sid','rej-company','rej-reason'].forEach(id => document.getElementById(id).value = '');
+  clearAlert('rejection-msg');
+  refreshCoordDashboard();
+}
+
+async function sendReminders() {
+  const apps = await api('GET', '/api/applications');
+  const missing = apps.filter(a => a.status.includes('Accepted') && a.report === 'Missing');
+  if (!missing.length) alert('All accepted students have submitted their reports!');
+  else alert(`📧 Reminder emails sent to ${missing.length} student(s):\n${missing.map(a=>`• ${a.name} (${a.email})`).join('\n')}`);
+}
+
+showScreen('landing');
+</script>
+</body>
+</html>
