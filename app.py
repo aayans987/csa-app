@@ -277,23 +277,19 @@ def submit_placement():
     conn.close()
     return jsonify({'success': True})
 
-@app.route('/api/placements/<int:placement_id>/status', methods=['PUT'])
-def update_placement_status(placement_id):
+@app.route('/api/placements/<int:id>/status', methods=['PUT'])
+def update_placement_status(id):
     data = request.json
     status = data.get('status')
-    reason = data.get('reason','')
-    if status not in ('Approved', 'Rejected'):
-        return jsonify({'error': 'Invalid status.'}), 400
-    from datetime import date
+    reason = data.get('reason', '')
     conn = get_db()
-    placement = conn.execute('SELECT * FROM placements WHERE id=?', (placement_id,)).fetchone()
-    if not placement:
-        conn.close()
-        return jsonify({'error': 'Placement not found.'}), 404
-    conn.execute('UPDATE placements SET status=? WHERE id=?', (status, placement_id))
-    if status == 'Rejected':
-        conn.execute('INSERT INTO rejections (sid,company,reason,date) VALUES (?,?,?,?)',
-                     (placement['sid'], placement['company'], reason or 'Placement rejected by coordinator', date.today().isoformat()))
+    conn.execute('UPDATE placements SET status=? WHERE id=?', (status, id))
+    if status == 'Rejected' and reason:
+        row = conn.execute('SELECT sid, company FROM placements WHERE id=?', (id,)).fetchone()
+        if row:
+            from datetime import date
+            conn.execute('INSERT INTO rejections (sid, company, reason, date) VALUES (?,?,?,?)',
+                         (row['sid'], row['company'], reason, date.today().isoformat()))
     conn.commit()
     conn.close()
     return jsonify({'success': True})
