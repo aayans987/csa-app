@@ -1,5 +1,5 @@
 # CSA — Co-op Support Application
-## Setup Instructions (takes 2 minutes)
+## Setup Instructions
 
 ### Step 1 — Install dependencies
 Open a terminal in this folder and run:
@@ -9,7 +9,7 @@ pip install flask flask-cors
 
 ### Step 2 — Run the app
 ```
-python app.py
+python app.py or py app.py
 ```
 
 ### Step 3 — Open in browser
