@@ -543,7 +543,16 @@ function placementBadge(status) {
 }
 
 function handleFileSelect(input, labelId) {
-  if (input.files[0]) document.getElementById(labelId).textContent = '✅ ' + input.files[0].name;
+  if (input.files[0]) {
+    const file = input.files[0];
+    if (!file.name.toLowerCase().endsWith('.pdf')) {
+      alert("❌ Invalid File: Only PDF documents are allowed for co-op reports.");
+      input.value = ''; // Reset the input
+      document.getElementById(labelId).textContent = "Click to upload your PDF report";
+      return;
+    }
+    document.getElementById(labelId).textContent = '✅ ' + file.name;
+  }
 }
 
 function daysUntil(dateStr) {
@@ -563,6 +572,26 @@ async function submitApplication() {
   ['apply-name','apply-sid','apply-email'].forEach(id => document.getElementById(id).value = '');
 }
 
+async function submitReport() {
+  const fileInput = document.getElementById('report-file');
+  const file = fileInput.files[0];
+  const term = document.getElementById('s-workterm').value;
+
+  if (!file) {
+    return showAlert('report-msg', 'Please select a PDF file first.');
+  }
+
+  // Double check extension before sending to Python
+  if (!file.name.toLowerCase().endsWith('.pdf')) {
+    return showAlert('report-msg', '❌ Submission Rejected: File must be a PDF.', 'error');
+  }
+
+  const res = await api('PUT', `/api/applications/${currentStudent.sid}/report`, { term });
+  if (res.error) return showAlert('report-msg', res.error);
+  
+  showAlert('report-msg', '✅ Report submitted successfully!', 'success');
+  document.getElementById('s-stat-report').textContent = 'Submitted';
+}
 // ── STUDENT AUTH ──────────────────────────────────
 async function studentLogin() {
   const id = document.getElementById('sl-id').value.trim();
