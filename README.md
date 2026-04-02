@@ -2,15 +2,25 @@
 ## Setup Instructions
 
 ### Step 1 — Install dependencies
-Open a terminal in this folder and run:
+Open a terminal in this folder and run one of these:
 ```
 pip install flask flask-cors
+
+or
+
+py -m pip install flask flask-cors
+
+or
+
+python -m pip install flask flask-cors
 ```
 
 ### Step 2 — Run the app unsing either
 ```
 python app.py
+
 or
+
 py app.py
 ```
 
