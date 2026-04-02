@@ -7,9 +7,11 @@ Open a terminal in this folder and run:
 pip install flask flask-cors
 ```
 
-### Step 2 — Run the app
+### Step 2 — Run the app unsing either
 ```
-python app.py or py app.py
+python app.py
+or
+py app.py
 ```
 
 ### Step 3 — Open in browser
