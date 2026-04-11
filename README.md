@@ -2,7 +2,7 @@
 ## Setup Instructions
 
 ### Step 1 — Install dependencies
-Open a terminal in this folder and run one of these:
+Open a terminal in this folder and run one of these for windows:
 ```
 pip install flask flask-cors
 
@@ -13,6 +13,10 @@ py -m pip install flask flask-cors
 or
 
 python -m pip install flask flask-cors
+```
+or this on MacOS:
+```
+python3 -m pip install flask flask-cors
 ```
 
 ### Step 2 — Run the app unsing either
