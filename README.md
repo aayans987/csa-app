@@ -19,13 +19,17 @@ or this on MacOS:
 python3 -m pip install flask flask-cors
 ```
 
-### Step 2 — Run the app unsing either
+### Step 2 — Run the app unsing either of these on windows:
 ```
 python app.py
 
 or
 
 py app.py
+```
+or this on MacOS:
+```
+python3 app.py
 ```
 
 ### Step 3 — Open in browser
