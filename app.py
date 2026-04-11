@@ -2,11 +2,15 @@ from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 import sqlite3
 import hashlib
+import os
+import base64
 
 app = Flask(__name__, static_folder='static')
 CORS(app)
 
 DB = 'csa.db'
+UPLOAD_FOLDER = 'uploads'
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 def get_db():
     conn = sqlite3.connect(DB)
@@ -29,7 +33,10 @@ def init_db():
         applied TEXT NOT NULL,
         report TEXT DEFAULT 'Missing',
         report_date TEXT,
-        term TEXT
+        term TEXT,
+        cover_letter TEXT,
+        resume TEXT,
+        work_term_grade TEXT DEFAULT 'Pending'
     )''')
 
     c.execute('''CREATE TABLE IF NOT EXISTS student_accounts (
@@ -84,14 +91,14 @@ def init_db():
     try:
         from datetime import date
         samples = [
-            ('Alice Chen', '501100001', 'alice@torontomu.ca', 'Provisionally Accepted', '2026-01-15', 'Submitted', '2026-03-10', 'Winter 2026 (Jan – Apr)'),
-            ('Bob Tremblay', '501100002', 'bob@torontomu.ca', 'Pending', '2026-01-18', 'Missing', None, None),
-            ('Sara Patel', '501100003', 'sara@torontomu.ca', 'Finally Accepted', '2026-01-10', 'Submitted', '2026-02-05', 'Fall 2025 (Sep – Dec)'),
-            ('James Wu', '501100004', 'james@torontomu.ca', 'Provisionally Rejected', '2026-01-20', 'Missing', None, None),
-            ('Maria Santos', '501100005', 'maria@torontomu.ca', 'Pending', '2026-01-22', 'Missing', None, None),
+            ('Alice Chen', '501100001', 'alice@torontomu.ca', 'Provisionally Accepted', '2026-01-15', 'Submitted', '2026-03-10', 'Winter 2026 (Jan – Apr)', None, None, 'Pending'),
+            ('Bob Tremblay', '501100002', 'bob@torontomu.ca', 'Pending', '2026-01-18', 'Missing', None, None, None, None, 'Pending'),
+            ('Sara Patel', '501100003', 'sara@torontomu.ca', 'Finally Accepted', '2026-01-10', 'Submitted', '2026-02-05', 'Fall 2025 (Sep – Dec)', None, None, 'Pass'),
+            ('James Wu', '501100004', 'james@torontomu.ca', 'Provisionally Rejected', '2026-01-20', 'Missing', None, None, None, None, 'Pending'),
+            ('Maria Santos', '501100005', 'maria@torontomu.ca', 'Pending', '2026-01-22', 'Missing', None, None, None, None, 'Pending'),
         ]
         for s in samples:
-            c.execute('INSERT OR IGNORE INTO applications (name,sid,email,status,applied,report,report_date,term) VALUES (?,?,?,?,?,?,?,?)', s)
+            c.execute('INSERT OR IGNORE INTO applications (name,sid,email,status,applied,report,report_date,term,cover_letter,resume,work_term_grade) VALUES (?,?,?,?,?,?,?,?,?,?,?)', s)
 
         hashed = hash_pw('pass123')
         c.execute('INSERT OR IGNORE INTO student_accounts (sid,email,password,name) VALUES (?,?,?,?)',
@@ -127,7 +134,14 @@ def get_applications():
     conn = get_db()
     rows = conn.execute('SELECT * FROM applications WHERE status=?', (status,)).fetchall() if status else conn.execute('SELECT * FROM applications').fetchall()
     conn.close()
-    return jsonify([dict(r) for r in rows])
+    # Don't send file data in list view
+    result = []
+    for r in rows:
+        d = dict(r)
+        d.pop('cover_letter', None)
+        d.pop('resume', None)
+        result.append(d)
+    return jsonify(result)
 
 @app.route('/api/applications', methods=['POST'])
 def submit_application():
@@ -135,17 +149,21 @@ def submit_application():
     name = data.get('name','').strip()
     sid = data.get('sid','').strip()
     email = data.get('email','').strip()
+    cover_letter = data.get('coverLetter', None)  # base64 or None
+    resume = data.get('resume', None)
+
     if not name or not sid or not email:
         return jsonify({'error': 'All fields are required.'}), 400
     if not sid.isdigit() or len(sid) != 9:
         return jsonify({'error': 'Student ID must be exactly 9 digits.'}), 400
     if '@' not in email:
         return jsonify({'error': 'Please enter a valid email address.'}), 400
+
     from datetime import date
     try:
         conn = get_db()
-        conn.execute('INSERT INTO applications (name,sid,email,applied) VALUES (?,?,?,?)',
-                     (name, sid, email, date.today().isoformat()))
+        conn.execute('INSERT INTO applications (name,sid,email,applied,cover_letter,resume) VALUES (?,?,?,?,?,?)',
+                     (name, sid, email, date.today().isoformat(), cover_letter, resume))
         conn.commit()
         conn.close()
         return jsonify({'success': True})
@@ -164,6 +182,43 @@ def update_status(app_id):
     conn.commit()
     conn.close()
     return jsonify({'success': True})
+
+@app.route('/api/applications/<int:app_id>/grade', methods=['PUT'])
+def grade_student(app_id):
+    data = request.json
+    grade = data.get('grade')
+    if grade not in ('Pass', 'Fail'):
+        return jsonify({'error': 'Grade must be Pass or Fail.'}), 400
+    conn = get_db()
+    # Check report and evaluation are both submitted
+    app_row = conn.execute('SELECT * FROM applications WHERE id=?', (app_id,)).fetchone()
+    if not app_row:
+        conn.close()
+        return jsonify({'error': 'Application not found.'}), 404
+    if app_row['report'] != 'Submitted':
+        conn.close()
+        return jsonify({'error': 'Cannot grade: work term report not yet submitted.'}), 400
+    ev = conn.execute('SELECT id FROM evaluations WHERE student_sid=?', (app_row['sid'],)).fetchone()
+    if not ev:
+        conn.close()
+        return jsonify({'error': 'Cannot grade: supervisor evaluation not yet submitted.'}), 400
+    conn.execute('UPDATE applications SET work_term_grade=? WHERE id=?', (grade, app_id))
+    conn.commit()
+    conn.close()
+    return jsonify({'success': True})
+
+@app.route('/api/applications/<int:app_id>/documents', methods=['GET'])
+def get_documents(app_id):
+    conn = get_db()
+    row = conn.execute('SELECT cover_letter, resume, name, sid FROM applications WHERE id=?', (app_id,)).fetchone()
+    conn.close()
+    if not row:
+        return jsonify({'error': 'Not found'}), 404
+    return jsonify({
+        'name': row['name'], 'sid': row['sid'],
+        'cover_letter': row['cover_letter'],
+        'resume': row['resume']
+    })
 
 @app.route('/api/applications/<string:sid>/report', methods=['PUT'])
 def submit_report(sid):
@@ -229,7 +284,7 @@ def student_login():
 @app.route('/api/student/<string:sid>', methods=['GET'])
 def get_student_info(sid):
     conn = get_db()
-    app_row = conn.execute('SELECT * FROM applications WHERE sid=?', (sid,)).fetchone()
+    app_row = conn.execute('SELECT id,name,sid,email,status,applied,report,report_date,term,work_term_grade FROM applications WHERE sid=?', (sid,)).fetchone()
     conn.close()
     if not app_row:
         return jsonify({'error': 'Not found'}), 404
@@ -277,19 +332,23 @@ def submit_placement():
     conn.close()
     return jsonify({'success': True})
 
-@app.route('/api/placements/<int:id>/status', methods=['PUT'])
-def update_placement_status(id):
+@app.route('/api/placements/<int:placement_id>/status', methods=['PUT'])
+def update_placement_status(placement_id):
     data = request.json
     status = data.get('status')
-    reason = data.get('reason', '')
+    reason = data.get('reason','')
+    if status not in ('Approved', 'Rejected'):
+        return jsonify({'error': 'Invalid status.'}), 400
+    from datetime import date
     conn = get_db()
-    conn.execute('UPDATE placements SET status=? WHERE id=?', (status, id))
-    if status == 'Rejected' and reason:
-        row = conn.execute('SELECT sid, company FROM placements WHERE id=?', (id,)).fetchone()
-        if row:
-            from datetime import date
-            conn.execute('INSERT INTO rejections (sid, company, reason, date) VALUES (?,?,?,?)',
-                         (row['sid'], row['company'], reason, date.today().isoformat()))
+    placement = conn.execute('SELECT * FROM placements WHERE id=?', (placement_id,)).fetchone()
+    if not placement:
+        conn.close()
+        return jsonify({'error': 'Placement not found.'}), 404
+    conn.execute('UPDATE placements SET status=? WHERE id=?', (status, placement_id))
+    if status == 'Rejected':
+        conn.execute('INSERT INTO rejections (sid,company,reason,date) VALUES (?,?,?,?)',
+                     (placement['sid'], placement['company'], reason or 'Placement rejected by coordinator', date.today().isoformat()))
     conn.commit()
     conn.close()
     return jsonify({'success': True})
