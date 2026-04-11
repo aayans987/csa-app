@@ -1,4 +1,3 @@
-csa_app (1).zip
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -38,7 +37,7 @@ csa_app (1).zip
   .btn-logout { background:transparent; border:1px solid rgba(255,255,255,.2); color:rgba(255,255,255,.7); padding:.4rem 1rem; border-radius:6px; cursor:pointer; font-size:.8rem; transition:all .2s; }
   .btn-logout:hover { border-color:var(--gold); color:var(--gold); }
 
-  .page-content { max-width:960px; margin:0 auto; padding:2.5rem 2rem; }
+  .page-content { max-width:1000px; margin:0 auto; padding:2.5rem 2rem; }
   .page-header { margin-bottom:2rem; }
   .page-header h1 { font-family:'DM Serif Display',serif; font-size:2rem; color:var(--navy); margin-bottom:.25rem; }
   .page-header p { color:var(--muted); font-size:.9rem; }
@@ -60,6 +59,7 @@ csa_app (1).zip
   .btn-outline:hover { border-color:var(--navy); }
   .btn-success { background:var(--green); color:var(--white); padding:.4rem .9rem; font-size:.8rem; }
   .btn-danger { background:var(--red); color:var(--white); padding:.4rem .9rem; font-size:.8rem; }
+  .btn-gold { background:var(--gold); color:var(--navy); padding:.4rem .9rem; font-size:.8rem; font-weight:700; }
   .btn-sm { padding:.35rem .75rem; font-size:.8rem; }
 
   .table-wrap { overflow-x:auto; }
@@ -80,14 +80,17 @@ csa_app (1).zip
   .badge-approved { background:#bfdbfe; color:#1e3a8a; }
   .badge-rejected-p { background:#fee2e2; color:#991b1b; }
   .badge-pending-p { background:#fef3c7; color:#92400e; }
+  .badge-pass { background:#d1fae5; color:#065f46; }
+  .badge-fail { background:#fee2e2; color:#991b1b; }
+  .badge-grade-pending { background:#fef3c7; color:#92400e; }
 
-  .stats-row { display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:1rem; margin-bottom:2rem; }
+  .stats-row { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:1rem; margin-bottom:2rem; }
   .stat-card { background:var(--white); border:1px solid var(--border); border-radius:10px; padding:1.25rem 1.5rem; text-align:center; }
   .stat-card .num { font-family:'DM Serif Display',serif; font-size:2.2rem; color:var(--navy); line-height:1; margin-bottom:.25rem; }
   .stat-card .lbl { font-size:.75rem; color:var(--muted); font-weight:500; text-transform:uppercase; letter-spacing:.05em; }
 
   .auth-wrap { min-height:100vh; display:flex; align-items:center; justify-content:center; background:var(--cream); padding:2rem; }
-  .auth-box { background:var(--white); border:1px solid var(--border); border-radius:16px; padding:2.5rem; width:100%; max-width:420px; box-shadow:0 4px 24px rgba(0,0,0,.08); }
+  .auth-box { background:var(--white); border:1px solid var(--border); border-radius:16px; padding:2.5rem; width:100%; max-width:440px; box-shadow:0 4px 24px rgba(0,0,0,.08); }
   .auth-logo { font-family:'DM Serif Display',serif; font-size:1.5rem; color:var(--navy); margin-bottom:.25rem; }
   .auth-logo span { color:var(--gold); }
   .auth-sub { color:var(--muted); font-size:.85rem; margin-bottom:2rem; }
@@ -101,36 +104,35 @@ csa_app (1).zip
   .alert-info { background:#dbeafe; color:#1e3a8a; border:1px solid #93c5fd; }
   .alert-warning { background:#fef3c7; color:#92400e; border:1px solid #fcd34d; }
 
-  .tabs { display:flex; gap:.25rem; margin-bottom:1.5rem; border-bottom:2px solid var(--cream-dark); }
+  .tabs { display:flex; gap:.25rem; margin-bottom:1.5rem; border-bottom:2px solid var(--cream-dark); flex-wrap:wrap; }
   .tab-btn { padding:.6rem 1.2rem; font-size:.85rem; font-weight:600; color:var(--muted); background:none; border:none; cursor:pointer; border-bottom:2px solid transparent; margin-bottom:-2px; transition:all .2s; }
   .tab-btn.active { color:var(--navy); border-bottom-color:var(--gold); }
   .tab-panel { display:none; }
   .tab-panel.active { display:block; }
 
-  .file-drop { border:2px dashed var(--border); border-radius:10px; padding:2rem; text-align:center; cursor:pointer; transition:all .2s; background:var(--cream); }
+  .file-drop { border:2px dashed var(--border); border-radius:10px; padding:1.5rem; text-align:center; cursor:pointer; transition:all .2s; background:var(--cream); }
   .file-drop:hover { border-color:var(--gold); }
-  .file-drop .icon { font-size:2rem; margin-bottom:.5rem; }
-  .file-drop p { color:var(--muted); font-size:.85rem; }
+  .file-drop .icon { font-size:1.5rem; margin-bottom:.4rem; }
+  .file-drop p { color:var(--muted); font-size:.82rem; }
   .file-drop input { display:none; }
 
   .rating-group { display:grid; grid-template-columns:1fr auto; gap:1rem; align-items:center; padding:.75rem 0; border-bottom:1px solid var(--cream-dark); }
   .stars { display:flex; gap:.25rem; }
   .star { font-size:1.2rem; cursor:pointer; color:var(--cream-dark); transition:color .15s; }
   .star.active { color:var(--gold); }
-  .star-display { font-size:1rem; color:var(--gold); }
 
   .back-link { color:var(--muted); font-size:.85rem; cursor:pointer; display:inline-flex; align-items:center; gap:.3rem; margin-bottom:1.5rem; transition:color .2s; }
   .back-link:hover { color:var(--navy); }
   .empty-state { text-align:center; padding:3rem; color:var(--muted); }
   .empty-state .icon { font-size:2.5rem; margin-bottom:.75rem; }
 
-  .deadline-banner { background:var(--navy); color:var(--white); padding:.75rem 1rem; border-radius:8px; font-size:.875rem; margin-bottom:1rem; display:flex; align-items:center; gap:.5rem; }
+  .deadline-banner { background:var(--navy); color:var(--white); padding:.75rem 1rem; border-radius:8px; font-size:.875rem; margin-bottom:1rem; }
   .deadline-banner.warning { background:#92400e; }
   .deadline-banner.overdue { background:var(--red); }
 
   .modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,.5); z-index:999; align-items:center; justify-content:center; }
   .modal-overlay.open { display:flex; }
-  .modal { background:var(--white); border-radius:16px; padding:2rem; width:100%; max-width:400px; box-shadow:0 8px 32px rgba(0,0,0,.15); }
+  .modal { background:var(--white); border-radius:16px; padding:2rem; width:100%; max-width:420px; box-shadow:0 8px 32px rgba(0,0,0,.15); max-height:80vh; overflow-y:auto; }
   .modal h3 { font-family:'DM Serif Display',serif; font-size:1.2rem; color:var(--navy); margin-bottom:1rem; }
 
   @keyframes fadeUp { from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)} }
@@ -143,7 +145,7 @@ csa_app (1).zip
 <div id="landing">
   <div class="landing-badge">Toronto Metropolitan University</div>
   <h1 class="landing-title">Co-op Support<br><span>Application</span></h1>
-  <p class="landing-sub" style="text-align:center">A centralized platform...</p>
+  <p class="landing-sub" style="text-align:center">A centralized platform for managing co-op applications, work term reports, and employer evaluations.</p>
   <div class="landing-cards">
     <div class="landing-card" onclick="showScreen('apply')"><span class="icon">📝</span><div class="label">Apply</div><div class="sublabel">Submit application</div></div>
     <div class="landing-card" onclick="showScreen('student-login')"><span class="icon">🎓</span><div class="label">Student</div><div class="sublabel">Login to portal</div></div>
@@ -155,7 +157,7 @@ csa_app (1).zip
 <!-- APPLY -->
 <div id="apply" class="screen">
   <div class="auth-wrap">
-    <div class="auth-box" style="max-width:480px">
+    <div class="auth-box" style="max-width:500px">
       <span class="back-link" onclick="showScreen('landing')">← Back</span>
       <div class="auth-logo">CSA <span>Portal</span></div>
       <div class="auth-sub">Apply for Co-op Provisional Acceptance</div>
@@ -163,6 +165,25 @@ csa_app (1).zip
       <div class="form-group"><label>Full Name</label><input type="text" id="apply-name" placeholder="Jane Doe"></div>
       <div class="form-group"><label>Student ID</label><input type="text" id="apply-sid" placeholder="501XXXXXX"></div>
       <div class="form-group"><label>Email Address</label><input type="email" id="apply-email" placeholder="jane@torontomu.ca"></div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Cover Letter (PDF)</label>
+          <div class="file-drop" onclick="document.getElementById('apply-cover').click()">
+            <div class="icon">📄</div>
+            <p id="apply-cover-label">Upload Cover Letter</p>
+            <input type="file" id="apply-cover" accept=".pdf" onchange="handleApplyFile(this,'apply-cover-label','coverLetter')">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Resume (PDF)</label>
+          <div class="file-drop" onclick="document.getElementById('apply-resume').click()">
+            <div class="icon">📋</div>
+            <p id="apply-resume-label">Upload Resume</p>
+            <input type="file" id="apply-resume" accept=".pdf" onchange="handleApplyFile(this,'apply-resume-label','resume')">
+          </div>
+        </div>
+      </div>
+      <p style="font-size:.78rem;color:var(--muted);margin-bottom:1rem">Cover letter and resume are optional but recommended.</p>
       <button class="btn btn-primary" style="width:100%" onclick="submitApplication()">Submit Application</button>
     </div>
   </div>
@@ -216,14 +237,13 @@ csa_app (1).zip
       <div class="stat-card"><div class="num" id="s-stat-placement">—</div><div class="lbl">Placement</div></div>
       <div class="stat-card"><div class="num" id="s-stat-report">—</div><div class="lbl">Report</div></div>
       <div class="stat-card"><div class="num" id="s-stat-deadline">—</div><div class="lbl">Days Until Deadline</div></div>
+      <div class="stat-card"><div class="num" id="s-stat-grade">—</div><div class="lbl">Work Term Grade</div></div>
     </div>
     <div class="tabs">
       <button class="tab-btn active" onclick="switchTab(this,'tab-placement')">My Placement</button>
       <button class="tab-btn" onclick="switchTab(this,'tab-report')">Work Term Report</button>
       <button class="tab-btn" onclick="switchTab(this,'tab-appstatus')">My Application</button>
     </div>
-
-    <!-- Placement tab -->
     <div id="tab-placement" class="tab-panel active">
       <div class="card">
         <h2>Submit Job Placement</h2>
@@ -240,8 +260,6 @@ csa_app (1).zip
         <button class="btn btn-primary" onclick="submitPlacement()">Submit Placement</button>
       </div>
     </div>
-
-    <!-- Report tab -->
     <div id="tab-report" class="tab-panel">
       <div class="card">
         <h2>Submit Work Term Report</h2>
@@ -269,8 +287,6 @@ csa_app (1).zip
         </div>
       </div>
     </div>
-
-    <!-- App status tab -->
     <div id="tab-appstatus" class="tab-panel">
       <div class="card"><h2>Application Status</h2><div id="student-app-status-detail"></div></div>
     </div>
@@ -344,7 +360,6 @@ csa_app (1).zip
       <div class="card">
         <h2>Upload Scanned Evaluation</h2>
         <div id="eval-pdf-msg"></div>
-        <p style="color:var(--muted);font-size:.875rem;margin-bottom:1.25rem">Upload a scanned copy of the paper evaluation form.</p>
         <div class="form-group">
           <label>Evaluation PDF</label>
           <div class="file-drop" onclick="document.getElementById('eval-file').click()">
@@ -357,10 +372,7 @@ csa_app (1).zip
       </div>
     </div>
     <div id="tab-eval-view" class="tab-panel">
-      <div class="card">
-        <h2>Submitted Evaluation</h2>
-        <div id="eval-view-content"><div class="empty-state"><div class="icon">📋</div><p>No evaluation submitted yet.</p></div></div>
-      </div>
+      <div class="card"><h2>Submitted Evaluation</h2><div id="eval-view-content"><div class="empty-state"><div class="icon">📋</div><p>No evaluation submitted yet.</p></div></div></div>
     </div>
   </div>
 </div>
@@ -396,7 +408,7 @@ csa_app (1).zip
     <div class="tabs">
       <button class="tab-btn active" onclick="switchTab(this,'tab-applicants')">Applications</button>
       <button class="tab-btn" onclick="switchTab(this,'tab-placements')">Placements</button>
-      <button class="tab-btn" onclick="switchTab(this,'tab-reports')">Reports</button>
+      <button class="tab-btn" onclick="switchTab(this,'tab-reports')">Reports & Grades</button>
       <button class="tab-btn" onclick="switchTab(this,'tab-evaluations')">Evaluations</button>
       <button class="tab-btn" onclick="switchTab(this,'tab-rejections')">Rejections</button>
     </div>
@@ -416,7 +428,7 @@ csa_app (1).zip
           <button class="btn btn-outline btn-sm" onclick="sendReminders()">📧 Send Reminders</button>
         </div>
         <div class="table-wrap">
-          <table><thead><tr><th>Name</th><th>Student ID</th><th>Email</th><th>Status</th><th>Applied</th><th>Actions</th></tr></thead>
+          <table><thead><tr><th>Name</th><th>Student ID</th><th>Email</th><th>Documents</th><th>Status</th><th>Applied</th><th>Actions</th></tr></thead>
           <tbody id="applicants-tbody"></tbody></table>
         </div>
       </div>
@@ -434,9 +446,10 @@ csa_app (1).zip
 
     <div id="tab-reports" class="tab-panel">
       <div class="card">
-        <h2>Work Term Reports</h2>
+        <h2>Work Term Reports & Grades</h2>
+        <p style="color:var(--muted);font-size:.875rem;margin-bottom:1rem">Grade students after both their report and supervisor evaluation have been submitted.</p>
         <div class="table-wrap">
-          <table><thead><tr><th>Student</th><th>Student ID</th><th>Work Term</th><th>Deadline</th><th>Report Status</th><th>Submitted</th></tr></thead>
+          <table><thead><tr><th>Student</th><th>Student ID</th><th>Work Term</th><th>Deadline</th><th>Report</th><th>Evaluation</th><th>Work Term Grade</th><th>Actions</th></tr></thead>
           <tbody id="reports-tbody"></tbody></table>
         </div>
       </div>
@@ -471,15 +484,26 @@ csa_app (1).zip
   </div>
 </div>
 
-<!-- Rejection reason modal -->
+<!-- Reject placement modal -->
 <div class="modal-overlay" id="reject-modal">
   <div class="modal">
     <h3>Reject Placement</h3>
-    <p style="color:var(--muted);font-size:.875rem;margin-bottom:1rem">Provide a reason for rejecting this placement. It will be logged automatically.</p>
+    <p style="color:var(--muted);font-size:.875rem;margin-bottom:1rem">Provide a reason. It will be auto-logged to the rejections table.</p>
     <div class="form-group"><label>Reason</label><input type="text" id="reject-reason-input" placeholder="e.g. Does not meet requirements"></div>
     <div style="display:flex;gap:.75rem;margin-top:1rem">
       <button class="btn btn-danger" onclick="confirmReject()">Confirm Reject</button>
-      <button class="btn btn-outline" onclick="closeRejectModal()">Cancel</button>
+      <button class="btn btn-outline" onclick="closeModal('reject-modal')">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- Documents modal -->
+<div class="modal-overlay" id="docs-modal">
+  <div class="modal" style="max-width:500px">
+    <h3 id="docs-modal-title">Applicant Documents</h3>
+    <div id="docs-modal-content"></div>
+    <div style="margin-top:1.5rem">
+      <button class="btn btn-outline" onclick="closeModal('docs-modal')">Close</button>
     </div>
   </div>
 </div>
@@ -489,10 +513,10 @@ const API = '';
 let currentStudent = null;
 let currentSupervisor = null;
 let rejectingPlacementId = null;
+let applyFiles = { coverLetter: null, resume: null };
 const ratingCategories = ['Technical Skills','Communication','Teamwork','Initiative','Professionalism','Overall Performance'];
 const ratings = {};
 
-// Work term deadlines (report due 30 days after end)
 const termDeadlines = {
   'Fall 2025 (Sep – Dec)': '2026-01-23',
   'Winter 2026 (Jan – Apr)': '2026-05-24',
@@ -513,19 +537,19 @@ function clearAlert(id) { document.getElementById(id).innerHTML = ''; }
 
 function showScreen(id) {
   document.querySelectorAll('.screen, #landing').forEach(s => { s.classList.remove('active'); s.style.display = 'none'; });
+  if (['landing','student-login','supervisor-login','coordinator-login'].includes(id)) {
+    document.querySelectorAll('input[type="text"],input[type="email"],input[type="password"]').forEach(i => i.value = '');
+    document.querySelectorAll('.alert').forEach(a => a.remove());
+    currentStudent = null; currentSupervisor = null;
+    applyFiles = { coverLetter: null, resume: null };
+    document.getElementById('apply-cover-label').textContent = 'Upload Cover Letter';
+    document.getElementById('apply-resume-label').textContent = 'Upload Resume';
+  }
   const el = document.getElementById(id);
   el.style.display = 'block';
   setTimeout(() => el.classList.add('active'), 10);
   if (id === 'coordinator-dashboard') refreshCoordDashboard();
   if (id === 'supervisor-dashboard') initSupervisorDashboard();
-  
-  // Clear all inputs and alerts when navigating
-  if (id === 'landing' || id === 'student-login' || id === 'supervisor-login' || id === 'coordinator-login') {
-    document.querySelectorAll('input[type="text"], input[type="email"], input[type="password"]').forEach(i => i.value = '');
-    document.querySelectorAll('.alert').forEach(a => a.remove());
-    currentStudent = null;
-    currentSupervisor = null;
-  }
 }
 
 function switchTab(btn, panelId) {
@@ -550,56 +574,51 @@ function placementBadge(status) {
   return `<span class="badge ${map[status]||'badge-pending-p'}">${status}</span>`;
 }
 
+function gradeBadge(grade) {
+  if (grade === 'Pass') return `<span class="badge badge-pass">Pass</span>`;
+  if (grade === 'Fail') return `<span class="badge badge-fail">Fail</span>`;
+  return `<span class="badge badge-grade-pending">Pending</span>`;
+}
+
 function handleFileSelect(input, labelId) {
-  if (input.files[0]) {
-    const file = input.files[0];
-    if (!file.name.toLowerCase().endsWith('.pdf')) {
-      alert("❌ Invalid File: Only PDF documents are allowed for co-op reports.");
-      input.value = ''; // Reset the input
-      document.getElementById(labelId).textContent = "Click to upload your PDF report";
-      return;
-    }
-    document.getElementById(labelId).textContent = '✅ ' + file.name;
+  if (input.files[0]) document.getElementById(labelId).textContent = '✅ ' + input.files[0].name;
+}
+
+function handleApplyFile(input, labelId, key) {
+  if (!input.files[0]) return;
+  if (!input.files[0].name.endsWith('.pdf')) {
+    showAlert('apply-msg', `${key === 'coverLetter' ? 'Cover letter' : 'Resume'} must be a PDF file.`);
+    input.value = '';
+    return;
   }
+  document.getElementById(labelId).textContent = '✅ ' + input.files[0].name;
+  const reader = new FileReader();
+  reader.onload = e => applyFiles[key] = e.target.result.split(',')[1]; // base64
+  reader.readAsDataURL(input.files[0]);
 }
 
 function daysUntil(dateStr) {
   if (!dateStr) return null;
-  const diff = new Date(dateStr) - new Date();
-  return Math.ceil(diff / (1000 * 60 * 60 * 24));
+  return Math.ceil((new Date(dateStr) - new Date()) / (1000*60*60*24));
 }
+
+function openModal(id) { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
 
 // ── APPLICATION ───────────────────────────────────
 async function submitApplication() {
   const name = document.getElementById('apply-name').value.trim();
   const sid = document.getElementById('apply-sid').value.trim();
   const email = document.getElementById('apply-email').value.trim();
-  const res = await api('POST', '/api/applications', { name, sid, email });
+  const res = await api('POST', '/api/applications', { name, sid, email, coverLetter: applyFiles.coverLetter, resume: applyFiles.resume });
   if (res.error) return showAlert('apply-msg', res.error);
   showAlert('apply-msg', '✅ Application submitted! You will be notified once reviewed.', 'success');
   ['apply-name','apply-sid','apply-email'].forEach(id => document.getElementById(id).value = '');
+  applyFiles = { coverLetter: null, resume: null };
+  document.getElementById('apply-cover-label').textContent = 'Upload Cover Letter';
+  document.getElementById('apply-resume-label').textContent = 'Upload Resume';
 }
 
-async function submitReport() {
-  const fileInput = document.getElementById('report-file');
-  const file = fileInput.files[0];
-  const term = document.getElementById('s-workterm').value;
-
-  if (!file) {
-    return showAlert('report-msg', 'Please select a PDF file first.');
-  }
-
-  // Double check extension before sending to Python
-  if (!file.name.toLowerCase().endsWith('.pdf')) {
-    return showAlert('report-msg', '❌ Submission Rejected: File must be a PDF.', 'error');
-  }
-
-  const res = await api('PUT', `/api/applications/${currentStudent.sid}/report`, { term });
-  if (res.error) return showAlert('report-msg', res.error);
-  
-  showAlert('report-msg', '✅ Report submitted successfully!', 'success');
-  document.getElementById('s-stat-report').textContent = 'Submitted';
-}
 // ── STUDENT AUTH ──────────────────────────────────
 async function studentLogin() {
   const id = document.getElementById('sl-id').value.trim();
@@ -624,71 +643,46 @@ async function studentRegister() {
 async function loadStudentDashboard() {
   const info = await api('GET', `/api/student/${currentStudent.sid}`);
   const placement = await api('GET', `/api/placements/student/${currentStudent.sid}`);
-
   document.getElementById('student-welcome').textContent = `Welcome, ${currentStudent.name}`;
   document.getElementById('student-nav-name').textContent = currentStudent.name;
   document.getElementById('s-stat-status').textContent = info.status ? info.status.split(' ').slice(-1)[0] : '—';
   document.getElementById('s-stat-report').textContent = info.report || '—';
   document.getElementById('s-stat-placement').textContent = placement.status ? placement.status.split(' ')[0] : 'None';
+  document.getElementById('s-stat-grade').textContent = info.work_term_grade || '—';
 
-  // Deadline calculation
-  const term = info.term;
-  const deadline = term ? termDeadlines[term] : null;
+  const deadline = info.term ? termDeadlines[info.term] : null;
   const days = daysUntil(deadline);
+  document.getElementById('s-stat-deadline').textContent = days !== null ? (days > 0 ? days : 'Overdue') : '—';
+  const banner = document.getElementById('report-deadline-banner');
   if (days !== null) {
-    document.getElementById('s-stat-deadline').textContent = days > 0 ? days : 'Overdue';
-    const banner = document.getElementById('report-deadline-banner');
-    if (days <= 0) {
-      banner.innerHTML = `<div class="deadline-banner overdue">⚠️ Your report deadline has passed (${deadline}). Please submit immediately.</div>`;
-    } else if (days <= 7) {
-      banner.innerHTML = `<div class="deadline-banner warning">⚠️ Your report is due in ${days} day(s) on ${deadline}.</div>`;
-    } else {
-      banner.innerHTML = `<div class="deadline-banner">📅 Report deadline: ${deadline} (${days} days remaining)</div>`;
-    }
-  } else {
-    document.getElementById('s-stat-deadline').textContent = '—';
-  }
+    if (days <= 0) banner.innerHTML = `<div class="deadline-banner overdue">⚠️ Report deadline passed (${deadline}). Submit immediately.</div>`;
+    else if (days <= 7) banner.innerHTML = `<div class="deadline-banner warning">⚠️ Due in ${days} day(s) — ${deadline}</div>`;
+    else banner.innerHTML = `<div class="deadline-banner">📅 Report deadline: ${deadline} (${days} days remaining)</div>`;
+  } else banner.innerHTML = '';
 
-  // Report gating — only finally accepted
   const reportBtn = document.getElementById('submit-report-btn');
   if (info.status !== 'Finally Accepted') {
-    document.getElementById('report-gate-msg').innerHTML = `<div class="alert alert-warning">⚠️ Report submission is only available after final acceptance. Your current status is: <strong>${info.status}</strong></div>`;
-    reportBtn.disabled = true;
-    reportBtn.style.opacity = '0.5';
+    document.getElementById('report-gate-msg').innerHTML = `<div class="alert alert-warning">⚠️ Report submission is only available after final acceptance. Current status: <strong>${info.status}</strong></div>`;
+    reportBtn.disabled = true; reportBtn.style.opacity = '.5';
   } else {
     document.getElementById('report-gate-msg').innerHTML = '';
-    reportBtn.disabled = false;
-    reportBtn.style.opacity = '1';
+    reportBtn.disabled = false; reportBtn.style.opacity = '1';
   }
 
-  // Show existing placement
   if (placement.id) {
-    document.getElementById('placement-existing').innerHTML = `
-      <div class="alert alert-info" style="margin-bottom:1rem">
-        <strong>Current Placement:</strong> ${placement.position} at ${placement.company} 
-        — ${placement.start_date} to ${placement.end_date} 
-        — ${placementBadge(placement.status)}
-      </div>`;
+    document.getElementById('placement-existing').innerHTML = `<div class="alert alert-info" style="margin-bottom:1rem"><strong>Current Placement:</strong> ${placement.position} at ${placement.company} — ${placement.start_date} to ${placement.end_date} — ${placementBadge(placement.status)}</div>`;
     document.getElementById('p-company').value = placement.company;
     document.getElementById('p-position').value = placement.position;
     document.getElementById('p-start').value = placement.start_date;
     document.getElementById('p-end').value = placement.end_date;
   }
 
-  // App status detail
   document.getElementById('student-app-status-detail').innerHTML = `
     <div style="display:grid;gap:.75rem">
-      <div style="display:flex;justify-content:space-between;padding:.75rem;background:var(--cream);border-radius:8px">
-        <span style="font-weight:600;font-size:.875rem">Application Status</span>${statusBadge(info.status)}
-      </div>
-      <div style="display:flex;justify-content:space-between;padding:.75rem;background:var(--cream);border-radius:8px">
-        <span style="font-weight:600;font-size:.875rem">Report</span>
-        <span class="badge ${info.report==='Submitted'?'badge-submitted':'badge-missing'}">${info.report}</span>
-      </div>
-      <div style="display:flex;justify-content:space-between;padding:.75rem;background:var(--cream);border-radius:8px">
-        <span style="font-weight:600;font-size:.875rem">Applied</span>
-        <span style="font-size:.875rem">${info.applied}</span>
-      </div>
+      <div style="display:flex;justify-content:space-between;padding:.75rem;background:var(--cream);border-radius:8px"><span style="font-weight:600;font-size:.875rem">Application Status</span>${statusBadge(info.status)}</div>
+      <div style="display:flex;justify-content:space-between;padding:.75rem;background:var(--cream);border-radius:8px"><span style="font-weight:600;font-size:.875rem">Report</span><span class="badge ${info.report==='Submitted'?'badge-submitted':'badge-missing'}">${info.report}</span></div>
+      <div style="display:flex;justify-content:space-between;padding:.75rem;background:var(--cream);border-radius:8px"><span style="font-weight:600;font-size:.875rem">Work Term Grade</span>${gradeBadge(info.work_term_grade)}</div>
+      <div style="display:flex;justify-content:space-between;padding:.75rem;background:var(--cream);border-radius:8px"><span style="font-weight:600;font-size:.875rem">Applied</span><span style="font-size:.875rem">${info.applied}</span></div>
     </div>`;
 }
 
@@ -714,7 +708,7 @@ async function submitReport() {
   document.getElementById('s-stat-report').textContent = 'Submitted';
 }
 
-// ── SUPERVISOR AUTH ───────────────────────────────
+// ── SUPERVISOR ────────────────────────────────────
 async function supervisorRegister() {
   const name = document.getElementById('supr-name').value.trim();
   const company = document.getElementById('supr-company').value.trim();
@@ -749,8 +743,7 @@ function buildRatings() {
     ratings[cat] = 0;
     const row = document.createElement('div');
     row.className = 'rating-group';
-    row.innerHTML = `<span style="font-size:.875rem">${cat}</span>
-      <div class="stars">${[1,2,3,4,5].map(i=>`<span class="star" data-cat="${cat}" data-val="${i}" onclick="setRating('${cat}',${i})">★</span>`).join('')}</div>`;
+    row.innerHTML = `<span style="font-size:.875rem">${cat}</span><div class="stars">${[1,2,3,4,5].map(i=>`<span class="star" data-cat="${cat}" data-val="${i}" onclick="setRating('${cat}',${i})">★</span>`).join('')}</div>`;
     container.appendChild(row);
   });
 }
@@ -765,11 +758,9 @@ async function submitEvalForm() {
   if (unrated.length) return showAlert('eval-form-msg', `Please rate all categories. Missing: ${unrated.join(', ')}`);
   const res = await api('POST', '/api/evaluations', {
     studentSid: document.getElementById('eval-student').value,
-    supervisorName: currentSupervisor.name,
-    company: currentSupervisor.company,
+    supervisorName: currentSupervisor.name, company: currentSupervisor.company,
     term: document.getElementById('eval-term').value,
-    comments: document.getElementById('eval-comments').value,
-    ratings
+    comments: document.getElementById('eval-comments').value, ratings
   });
   if (res.error) return showAlert('eval-form-msg', res.error);
   showAlert('eval-form-msg', '✅ Evaluation submitted and linked to the student.', 'success');
@@ -779,14 +770,10 @@ async function submitEvalPDF() {
   const file = document.getElementById('eval-file').files[0];
   if (!file) return showAlert('eval-pdf-msg', 'Please select a PDF file.');
   if (!file.name.endsWith('.pdf')) return showAlert('eval-pdf-msg', 'Only PDF files are accepted.');
-  // Treat as form submission with no ratings for demo
   const res = await api('POST', '/api/evaluations', {
-    studentSid: currentSupervisor.studentSid,
-    supervisorName: currentSupervisor.name,
-    company: currentSupervisor.company,
-    term: 'PDF Upload',
-    comments: 'Submitted via scanned PDF.',
-    ratings: {}
+    studentSid: currentSupervisor.studentSid, supervisorName: currentSupervisor.name,
+    company: currentSupervisor.company, term: 'PDF Upload',
+    comments: 'Submitted via scanned PDF.', ratings: {}
   });
   if (res.error) return showAlert('eval-pdf-msg', res.error);
   showAlert('eval-pdf-msg', '✅ Evaluation PDF uploaded and linked to the student.', 'success');
@@ -796,34 +783,21 @@ async function loadSubmittedEval() {
   if (!currentSupervisor) return;
   const ev = await api('GET', `/api/evaluations/student/${currentSupervisor.studentSid}`);
   const container = document.getElementById('eval-view-content');
-  if (!ev.id) {
-    container.innerHTML = `<div class="empty-state"><div class="icon">📋</div><p>No evaluation submitted yet.</p></div>`;
-    return;
-  }
+  if (!ev.id) { container.innerHTML = `<div class="empty-state"><div class="icon">📋</div><p>No evaluation submitted yet.</p></div>`; return; }
   let ratingsHtml = '';
   try {
-    const r = ev.ratings.replace(/'/g, '"');
-    const parsed = JSON.parse(r);
-    ratingsHtml = Object.entries(parsed).map(([k,v]) =>
-      `<div class="rating-group"><span style="font-size:.875rem">${k}</span><div>${'★'.repeat(v)}<span style="color:var(--cream-dark)">${'★'.repeat(5-v)}</span></div></div>`
-    ).join('');
+    const parsed = JSON.parse(ev.ratings.replace(/'/g,'"'));
+    ratingsHtml = Object.entries(parsed).map(([k,v]) => `<div class="rating-group"><span style="font-size:.875rem">${k}</span><div>${'★'.repeat(v)}<span style="color:var(--cream-dark)">${'★'.repeat(5-v)}</span></div></div>`).join('');
   } catch(e) { ratingsHtml = `<p style="color:var(--muted);font-size:.875rem">${ev.ratings}</p>`; }
-
   container.innerHTML = `
     <div style="display:grid;gap:.75rem;margin-bottom:1.25rem">
-      <div style="display:flex;justify-content:space-between;padding:.75rem;background:var(--cream);border-radius:8px">
-        <span style="font-weight:600;font-size:.875rem">Student</span><span>${ev.student_name}</span>
-      </div>
-      <div style="display:flex;justify-content:space-between;padding:.75rem;background:var(--cream);border-radius:8px">
-        <span style="font-weight:600;font-size:.875rem">Work Term</span><span>${ev.term}</span>
-      </div>
-      <div style="display:flex;justify-content:space-between;padding:.75rem;background:var(--cream);border-radius:8px">
-        <span style="font-weight:600;font-size:.875rem">Status</span><span class="badge badge-submitted">${ev.status}</span>
-      </div>
+      <div style="display:flex;justify-content:space-between;padding:.75rem;background:var(--cream);border-radius:8px"><span style="font-weight:600;font-size:.875rem">Student</span><span>${ev.student_name}</span></div>
+      <div style="display:flex;justify-content:space-between;padding:.75rem;background:var(--cream);border-radius:8px"><span style="font-weight:600;font-size:.875rem">Work Term</span><span>${ev.term}</span></div>
+      <div style="display:flex;justify-content:space-between;padding:.75rem;background:var(--cream);border-radius:8px"><span style="font-weight:600;font-size:.875rem">Status</span><span class="badge badge-submitted">${ev.status}</span></div>
     </div>
     <p style="font-size:.8rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:.75rem">Ratings Given</p>
     ${ratingsHtml}
-    ${ev.comments ? `<div style="margin-top:1rem"><p style="font-size:.8rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:.5rem">Comments</p><p style="font-size:.875rem;line-height:1.6">${ev.comments}</p></div>` : ''}`;
+    ${ev.comments?`<div style="margin-top:1rem"><p style="font-size:.8rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:.5rem">Comments</p><p style="font-size:.875rem;line-height:1.6">${ev.comments}</p></div>`:''}`;
 }
 
 // ── COORDINATOR ───────────────────────────────────
@@ -836,59 +810,89 @@ function coordinatorLogin() {
 
 async function refreshCoordDashboard() {
   const [apps, evals, rejs, placements] = await Promise.all([
-    api('GET', '/api/applications'),
-    api('GET', '/api/evaluations'),
-    api('GET', '/api/rejections'),
-    api('GET', '/api/placements'),
+    api('GET','/api/applications'), api('GET','/api/evaluations'),
+    api('GET','/api/rejections'), api('GET','/api/placements')
   ]);
-
   document.getElementById('coord-stats').innerHTML = `
     <div class="stat-card"><div class="num">${apps.length}</div><div class="lbl">Total Applicants</div></div>
     <div class="stat-card"><div class="num">${apps.filter(a=>a.status==='Pending').length}</div><div class="lbl">Pending Review</div></div>
     <div class="stat-card"><div class="num">${apps.filter(a=>a.status.includes('Accepted')).length}</div><div class="lbl">Accepted</div></div>
-    <div class="stat-card"><div class="num">${apps.filter(a=>a.report==='Submitted').length}</div><div class="lbl">Reports In</div></div>`;
-
+    <div class="stat-card"><div class="num">${apps.filter(a=>a.report==='Submitted').length}</div><div class="lbl">Reports In</div></div>
+    <div class="stat-card"><div class="num">${apps.filter(a=>a.work_term_grade==='Pass').length}</div><div class="lbl">Passed</div></div>`;
   renderApplicantsData(apps);
   renderPlacementsData(placements);
-  renderReportsData(apps);
+  renderReportsData(apps, evals);
   renderEvaluationsData(apps, evals);
   renderRejectionsData(rejs);
 }
 
 function renderApplicantsData(apps) {
   const filter = document.getElementById('filter-status').value;
-  const list = filter ? apps.filter(a => a.status === filter) : apps;
+  const list = filter ? apps.filter(a=>a.status===filter) : apps;
   const tbody = document.getElementById('applicants-tbody');
-  if (!list.length) { tbody.innerHTML = `<tr><td colspan="6"><div class="empty-state"><div class="icon">📭</div><p>No applicants found.</p></div></td></tr>`; return; }
+  if (!list.length) { tbody.innerHTML=`<tr><td colspan="7"><div class="empty-state"><div class="icon">📭</div><p>No applicants found.</p></div></td></tr>`; return; }
   tbody.innerHTML = list.map(a => `
     <tr>
       <td style="font-weight:600">${a.name}</td>
       <td style="font-family:monospace;font-size:.82rem">${a.sid}</td>
       <td style="font-size:.82rem;color:var(--muted)">${a.email}</td>
+      <td><button class="btn btn-outline btn-sm" onclick="viewDocs(${a.id},'${a.name}')">📎 View Docs</button></td>
       <td>${statusBadge(a.status)}</td>
       <td style="font-size:.82rem;color:var(--muted)">${a.applied}</td>
       <td><div style="display:flex;gap:.4rem;flex-wrap:wrap">
-        ${a.status==='Pending'?`<button class="btn btn-success btn-sm" onclick="updateStatus(${a.id},'Provisionally Accepted')">✓ Prov. Accept</button><button class="btn btn-danger btn-sm" onclick="updateStatus(${a.id},'Provisionally Rejected')">✗ Prov. Reject</button>`:''}
-        ${a.status==='Provisionally Accepted'?`<button class="btn btn-success btn-sm" onclick="updateStatus(${a.id},'Finally Accepted')">✓ Final Accept</button><button class="btn btn-danger btn-sm" onclick="updateStatus(${a.id},'Finally Rejected')">✗ Final Reject</button>`:''}
-        ${['Finally Accepted','Finally Rejected','Provisionally Rejected'].includes(a.status)?`<span style="font-size:.78rem;color:var(--muted)">Decision made</span>`:''}
+        ${a.status==='Pending'?`<button class="btn btn-success btn-sm" onclick="updateStatus(${a.id},'Provisionally Accepted')">✓ Prov.</button><button class="btn btn-danger btn-sm" onclick="updateStatus(${a.id},'Provisionally Rejected')">✗ Prov.</button>`:''}
+        ${a.status==='Provisionally Accepted'?`<button class="btn btn-success btn-sm" onclick="updateStatus(${a.id},'Finally Accepted')">✓ Final</button><button class="btn btn-danger btn-sm" onclick="updateStatus(${a.id},'Finally Rejected')">✗ Final</button>`:''}
+        ${['Finally Accepted','Finally Rejected','Provisionally Rejected'].includes(a.status)?`<span style="font-size:.78rem;color:var(--muted)">Done</span>`:''}
       </div></td>
     </tr>`).join('');
 }
 
+async function viewDocs(appId, name) {
+  const data = await api('GET', `/api/applications/${appId}/documents`);
+  document.getElementById('docs-modal-title').textContent = `Documents — ${name}`;
+  const hasCover = data.cover_letter;
+  const hasResume = data.resume;
+  document.getElementById('docs-modal-content').innerHTML = `
+    <div style="display:grid;gap:1rem;margin-top:1rem">
+      <div style="padding:1rem;background:var(--cream);border-radius:8px;display:flex;justify-content:space-between;align-items:center">
+        <span style="font-weight:600;font-size:.875rem">📄 Cover Letter</span>
+        ${hasCover ? `<button class="btn btn-primary btn-sm" onclick="downloadDoc('${data.cover_letter}','cover_letter_${data.sid}.pdf')">Download</button>` : `<span class="badge badge-missing">Not Submitted</span>`}
+      </div>
+      <div style="padding:1rem;background:var(--cream);border-radius:8px;display:flex;justify-content:space-between;align-items:center">
+        <span style="font-weight:600;font-size:.875rem">📋 Resume</span>
+        ${hasResume ? `<button class="btn btn-primary btn-sm" onclick="downloadDoc('${data.resume}','resume_${data.sid}.pdf')">Download</button>` : `<span class="badge badge-missing">Not Submitted</span>`}
+      </div>
+    </div>`;
+  openModal('docs-modal');
+}
+
+function downloadDoc(base64, filename) {
+  const link = document.createElement('a');
+  link.href = 'data:application/pdf;base64,' + base64;
+  link.download = filename;
+  link.click();
+}
+
 async function renderApplicants() {
-  const apps = await api('GET', '/api/applications');
+  const apps = await api('GET','/api/applications');
   renderApplicantsData(apps);
 }
 
 async function updateStatus(id, status) {
-  await api('PUT', `/api/applications/${id}/status`, { status });
+  await api('PUT',`/api/applications/${id}/status`,{status});
+  refreshCoordDashboard();
+}
+
+async function gradeStudent(id, grade) {
+  const res = await api('PUT', `/api/applications/${id}/grade`, { grade });
+  if (res.error) return alert(res.error);
   refreshCoordDashboard();
 }
 
 function renderPlacementsData(placements) {
   const tbody = document.getElementById('placements-tbody');
-  if (!placements.length) { tbody.innerHTML = `<tr><td colspan="7"><div class="empty-state"><div class="icon">🏢</div><p>No placements submitted yet.</p></div></td></tr>`; return; }
-  tbody.innerHTML = placements.map(p => `
+  if (!placements.length) { tbody.innerHTML=`<tr><td colspan="7"><div class="empty-state"><div class="icon">🏢</div><p>No placements submitted yet.</p></div></td></tr>`; return; }
+  tbody.innerHTML = placements.map(p=>`
     <tr>
       <td style="font-weight:600">${p.student_name}</td>
       <td>${p.company}</td>
@@ -897,61 +901,63 @@ function renderPlacementsData(placements) {
       <td style="font-size:.82rem;color:var(--muted)">${p.end_date}</td>
       <td>${placementBadge(p.status)}</td>
       <td><div style="display:flex;gap:.4rem">
-        ${p.status==='Pending Approval'?`<button class="btn btn-success btn-sm" onclick="updatePlacement(${p.id},'Approved')">✓ Approve</button><button class="btn btn-danger btn-sm" onclick="openRejectModal(${p.id})">✗ Reject</button>`:''}
-        ${p.status!=='Pending Approval'?`<span style="font-size:.78rem;color:var(--muted)">Decided</span>`:''}
+        ${p.status==='Pending Approval'?`<button class="btn btn-success btn-sm" onclick="updatePlacement(${p.id},'Approved')">✓ Approve</button><button class="btn btn-danger btn-sm" onclick="openRejectModal(${p.id})">✗ Reject</button>`:'<span style="font-size:.78rem;color:var(--muted)">Decided</span>'}
       </div></td>
     </tr>`).join('');
 }
 
 async function updatePlacement(id, status) {
-  await api('PUT', `/api/placements/${id}/status`, { status });
+  await api('PUT',`/api/placements/${id}/status`,{status});
   refreshCoordDashboard();
 }
 
 function openRejectModal(id) {
   rejectingPlacementId = id;
   document.getElementById('reject-reason-input').value = '';
-  document.getElementById('reject-modal').classList.add('open');
-}
-
-function closeRejectModal() {
-  document.getElementById('reject-modal').classList.remove('open');
-  rejectingPlacementId = null;
+  openModal('reject-modal');
 }
 
 async function confirmReject() {
   const reason = document.getElementById('reject-reason-input').value.trim();
   if (!reason) return alert('Please enter a reason.');
-  await api('PUT', `/api/placements/${rejectingPlacementId}/status`, { status: 'Rejected', reason });
-  closeRejectModal();
+  await api('PUT',`/api/placements/${rejectingPlacementId}/status`,{status:'Rejected',reason});
+  closeModal('reject-modal');
   refreshCoordDashboard();
 }
 
-function renderReportsData(apps) {
+function renderReportsData(apps, evals) {
   const tbody = document.getElementById('reports-tbody');
-  const accepted = apps.filter(a => a.status.includes('Accepted'));
-  if (!accepted.length) { tbody.innerHTML = `<tr><td colspan="6"><div class="empty-state"><div class="icon">📄</div><p>No accepted students yet.</p></div></td></tr>`; return; }
+  const accepted = apps.filter(a=>a.status.includes('Accepted'));
+  if (!accepted.length) { tbody.innerHTML=`<tr><td colspan="8"><div class="empty-state"><div class="icon">📄</div><p>No accepted students yet.</p></div></td></tr>`; return; }
   tbody.innerHTML = accepted.map(a => {
     const deadline = a.term ? termDeadlines[a.term] : null;
     const days = daysUntil(deadline);
-    const deadlineDisplay = deadline ? `${deadline}${days !== null ? ` (${days > 0 ? days + 'd left' : 'overdue'})` : ''}` : '—';
+    const deadlineDisplay = deadline ? `${deadline}${days!==null?` (${days>0?days+'d':' overdue'})`:''}` : '—';
+    const ev = evals.find(e=>e.student_sid===a.sid);
+    const canGrade = a.report === 'Submitted' && ev;
     return `<tr>
       <td style="font-weight:600">${a.name}</td>
       <td style="font-family:monospace;font-size:.82rem">${a.sid}</td>
       <td style="font-size:.82rem">${a.term||'—'}</td>
-      <td style="font-size:.82rem;color:${days !== null && days <= 0 ? 'var(--red)' : 'var(--muted)'}">${deadlineDisplay}</td>
+      <td style="font-size:.82rem;color:${days!==null&&days<=0?'var(--red)':'var(--muted)'}">${deadlineDisplay}</td>
       <td><span class="badge ${a.report==='Submitted'?'badge-submitted':'badge-missing'}">${a.report}</span></td>
-      <td style="font-size:.82rem;color:var(--muted)">${a.report_date||'—'}</td>
+      <td><span class="badge ${ev?'badge-submitted':'badge-missing'}">${ev?'Submitted':'Missing'}</span></td>
+      <td>${gradeBadge(a.work_term_grade)}</td>
+      <td><div style="display:flex;gap:.4rem">
+        ${canGrade && a.work_term_grade==='Pending' ? `<button class="btn btn-success btn-sm" onclick="gradeStudent(${a.id},'Pass')">✓ Pass</button><button class="btn btn-danger btn-sm" onclick="gradeStudent(${a.id},'Fail')">✗ Fail</button>` : ''}
+        ${a.work_term_grade!=='Pending'?`<span style="font-size:.78rem;color:var(--muted)">Graded</span>`:''}
+        ${!canGrade && a.work_term_grade==='Pending'?`<span style="font-size:.78rem;color:var(--muted)">Awaiting submissions</span>`:''}
+      </div></td>
     </tr>`;
   }).join('');
 }
 
 function renderEvaluationsData(apps, evals) {
   const tbody = document.getElementById('evaluations-tbody');
-  const accepted = apps.filter(a => a.status.includes('Accepted'));
-  if (!accepted.length) { tbody.innerHTML = `<tr><td colspan="5"><div class="empty-state"><div class="icon">📋</div><p>No accepted students yet.</p></div></td></tr>`; return; }
-  tbody.innerHTML = accepted.map(a => {
-    const ev = evals.find(e => e.student_sid === a.sid);
+  const accepted = apps.filter(a=>a.status.includes('Accepted'));
+  if (!accepted.length) { tbody.innerHTML=`<tr><td colspan="5"><div class="empty-state"><div class="icon">📋</div><p>No accepted students yet.</p></div></td></tr>`; return; }
+  tbody.innerHTML = accepted.map(a=>{
+    const ev=evals.find(e=>e.student_sid===a.sid);
     return `<tr>
       <td style="font-weight:600">${a.name}</td>
       <td style="font-size:.82rem">${ev?ev.supervisor_name:'—'}</td>
@@ -964,8 +970,8 @@ function renderEvaluationsData(apps, evals) {
 
 function renderRejectionsData(rejs) {
   const tbody = document.getElementById('rejections-tbody');
-  if (!rejs.length) { tbody.innerHTML = `<tr><td colspan="4"><div class="empty-state"><div class="icon">📭</div><p>No rejections recorded.</p></div></td></tr>`; return; }
-  tbody.innerHTML = rejs.map(r => `
+  if (!rejs.length) { tbody.innerHTML=`<tr><td colspan="4"><div class="empty-state"><div class="icon">📭</div><p>No rejections recorded.</p></div></td></tr>`; return; }
+  tbody.innerHTML = rejs.map(r=>`
     <tr>
       <td style="font-family:monospace;font-size:.82rem">${r.sid}</td>
       <td>${r.company}</td>
@@ -975,20 +981,20 @@ function renderRejectionsData(rejs) {
 }
 
 async function addRejection() {
-  const sid = document.getElementById('rej-sid').value.trim();
-  const company = document.getElementById('rej-company').value.trim();
-  const reason = document.getElementById('rej-reason').value.trim();
-  const res = await api('POST', '/api/rejections', { sid, company, reason });
-  if (res.error) return showAlert('rejection-msg', res.error);
-  ['rej-sid','rej-company','rej-reason'].forEach(id => document.getElementById(id).value = '');
+  const sid=document.getElementById('rej-sid').value.trim();
+  const company=document.getElementById('rej-company').value.trim();
+  const reason=document.getElementById('rej-reason').value.trim();
+  const res=await api('POST','/api/rejections',{sid,company,reason});
+  if(res.error) return showAlert('rejection-msg',res.error);
+  ['rej-sid','rej-company','rej-reason'].forEach(id=>document.getElementById(id).value='');
   clearAlert('rejection-msg');
   refreshCoordDashboard();
 }
 
 async function sendReminders() {
-  const apps = await api('GET', '/api/applications');
-  const missing = apps.filter(a => a.status.includes('Accepted') && a.report === 'Missing');
-  if (!missing.length) alert('All accepted students have submitted their reports!');
+  const apps=await api('GET','/api/applications');
+  const missing=apps.filter(a=>a.status.includes('Accepted')&&a.report==='Missing');
+  if(!missing.length) alert('All accepted students have submitted their reports!');
   else alert(`📧 Reminder emails sent to ${missing.length} student(s):\n${missing.map(a=>`• ${a.name} (${a.email})`).join('\n')}`);
 }
 
