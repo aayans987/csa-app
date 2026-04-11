@@ -518,6 +518,14 @@ function showScreen(id) {
   setTimeout(() => el.classList.add('active'), 10);
   if (id === 'coordinator-dashboard') refreshCoordDashboard();
   if (id === 'supervisor-dashboard') initSupervisorDashboard();
+  
+  // Clear all inputs and alerts when navigating
+  if (id === 'landing' || id === 'student-login' || id === 'supervisor-login' || id === 'coordinator-login') {
+    document.querySelectorAll('input[type="text"], input[type="email"], input[type="password"]').forEach(i => i.value = '');
+    document.querySelectorAll('.alert').forEach(a => a.remove());
+    currentStudent = null;
+    currentSupervisor = null;
+  }
 }
 
 function switchTab(btn, panelId) {
